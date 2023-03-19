@@ -1,6 +1,5 @@
 # E-biznes
 
-Aggregate repository of all the projects needed for the UJ's e-biznes module. 
+Aggregate repository of all projects done as a part of the UJ's e-biznes module.
 
-<i>There are more README.md files in the specific directories.</i>
-
+<i>There are more README.md files in specific project's directories.</i>
