@@ -87,7 +87,7 @@ def showAllCategories() = Action { implicit request: Request[AnyContent] =>
     Ok("lol")
   }
   //  SHOPPING CART
-  def showCartMembers() = Action { implicit request: Request[AnyContent] =>
+  def showAllCartMembers() = Action { implicit request: Request[AnyContent] =>
     Ok("lol")
   }
 
