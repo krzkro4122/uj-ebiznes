@@ -22,9 +22,9 @@ DELETE  /category/:id                        controllers.HomeController.deleteCa
 POST    /category                            controllers.HomeController.addCategory()
 # Shopping cart
 GET     /cart                                controllers.HomeController.showAllCartMembers()
-GET     /cart                                controllers.HomeController.showCartMember()
-GET     /cart                                controllers.HomeController.updateCartMember()
-GET     /cart                                controllers.HomeController.deleteCartMember()
+GET     /cart/:id                            controllers.HomeController.showCartMember(id: Long)
+PUT     /cart/:id                            controllers.HomeController.updateCartMember(id: Long)
+DELETE  /cart/:id                            controllers.HomeController.deleteCartMember(id: Long)
 POST    /cart                                controllers.HomeController.addCartMember()
 POST    /cart/buy                            controllers.HomeController.buyCart()
 

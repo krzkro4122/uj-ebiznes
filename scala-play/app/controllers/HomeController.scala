@@ -40,13 +40,73 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
   def hello(name: String) = Action { implicit request: Request[AnyContent] =>
     Ok(views.html.hello(name))
   }
+  // PRODUCTS
+  def showAllProducts() = Action { implicit request: Request[AnyContent] =>
+    Ok("lol")
+  }
 
-  def product(id: Long) = Action { implicit request: Request[AnyContent] =>
-    if (true) NotFound(<h1>LOL {id} </h1>)
+  def showProduct(id: Long) = Action { implicit request: Request[AnyContent] =>
+    if (true) NotFound(<h1>LOL
+      {id}
+    </h1>)
     else Ok("LoL: " + id)
   }
 
-  def products() = Action { implicit request: Request[AnyContent] =>
-    Ok(Json.parse())
+  def updateProduct(id: Long) = Action { implicit request: Request[AnyContent] =>
+    Ok("lol")
+  }
+
+  def deleteProduct(id: Long) = Action { implicit request: Request[AnyContent] =>
+    Ok("lol")
+  }
+
+  def addProduct() = Action { implicit request: Request[AnyContent] =>
+    Ok("lol")
+  }
+  //  CATEGORIES
+def showAllCategories() = Action { implicit request: Request[AnyContent] =>
+  Ok("lol")
+}
+
+  def showCategory(id: Long) = Action { implicit request: Request[AnyContent] =>
+    if (true) NotFound(<h1>LOL
+      {id}
+    </h1>)
+    else Ok("LoL: " + id)
+  }
+
+  def updateCategory(id: Long) = Action { implicit request: Request[AnyContent] =>
+    Ok("lol")
+  }
+
+  def deleteCategory(id: Long) = Action { implicit request: Request[AnyContent] =>
+    Ok("lol")
+  }
+
+  def addCategory() = Action { implicit request: Request[AnyContent] =>
+    Ok("lol")
+  }
+  //  SHOPPING CART
+  def showCartMembers() = Action { implicit request: Request[AnyContent] =>
+    Ok("lol")
+  }
+
+  def showCartMember(id: Long) = Action { implicit request: Request[AnyContent] =>
+    if (true) NotFound(<h1>LOL
+      {id}
+    </h1>)
+    else Ok("LoL: " + id)
+  }
+
+  def updateCartMember(id: Long) = Action { implicit request: Request[AnyContent] =>
+    Ok("lol")
+  }
+
+  def deleteCartMember(id: Long) = Action { implicit request: Request[AnyContent] =>
+    Ok("lol")
+  }
+
+  def addCartMember() = Action { implicit request: Request[AnyContent] =>
+    Ok("lol")
   }
 }
