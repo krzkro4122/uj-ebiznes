@@ -6,7 +6,7 @@ import play.api.mvc._
 import play.api.libs.json._
 implicit val productsReads = Json.reads[Product]
 
-class Product (var id: Long, var price: Int) {
+class Product (var id: Long, var price: Int, category: String, quantity: Int) {
 }
 
 /**
@@ -16,7 +16,9 @@ class Product (var id: Long, var price: Int) {
 @Singleton
 class HomeController @Inject()(cc: ControllerComponents) extends AbstractController(cc) {
 
-  private val productsContainer: List[Product] = List()
+  private val products: List[Product] = List()
+  private val categories: List[Product] = List()
+  private val cart: List[Product] = List()
 
   /**
    * Create an Action to render an HTML page.
