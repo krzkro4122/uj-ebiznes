@@ -3,6 +3,11 @@ package controllers
 import javax.inject._
 import play.api._
 import play.api.mvc._
+import play.api.libs.json._
+implicit val productsReads = Json.reads[Product]
+
+class Product (var id: Long, var price: Int) {
+}
 
 /**
  * This controller creates an `Action` to handle HTTP requests to the
@@ -10,6 +15,8 @@ import play.api.mvc._
  */
 @Singleton
 class HomeController @Inject()(cc: ControllerComponents) extends AbstractController(cc) {
+
+  private val productsContainer: List[Product] = List()
 
   /**
    * Create an Action to render an HTML page.
@@ -30,7 +37,16 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
     Ok(views.html.tutorial())
   }
 
-  def hello() = Action { implicit request: Request[AnyContent] =>
-    Ok(views.html.hello())
+  def hello(name: String) = Action { implicit request: Request[AnyContent] =>
+    Ok(views.html.hello(name))
+  }
+
+  def product(id: Long) = Action { implicit request: Request[AnyContent] =>
+    if (true) NotFound(<h1>LOL {id} </h1>)
+    else Ok("LoL: " + id)
+  }
+
+  def products() = Action { implicit request: Request[AnyContent] =>
+    Ok(Json.parse())
   }
 }
