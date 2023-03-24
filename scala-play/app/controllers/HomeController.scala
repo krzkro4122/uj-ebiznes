@@ -8,8 +8,9 @@ import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
 import scala.collection.mutable.ListBuffer
+import scala.concurrent.ExecutionException
 
-case class Product (var id: Long, name: String, var price: Int, category: String, quantity: Int)
+case class Product (var id: Long, var name: String, var price: Int, var category: String, var quantity: Int)
 object Product {
   var listBuffer: ListBuffer[Product] = {
     ListBuffer(
@@ -72,43 +73,61 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
   }
 
   def showProduct(id: Long) = Action { implicit request: Request[AnyContent] =>
-    Ok(Json.toJson(Product.listBuffer.find(prod => {prod.id == id})))
+    val product = Product.listBuffer.find(prod => {prod.id == id}).orNull
+    if (product == null) {
+      NotFound("Product of id: " + id + " was not found!")
+    }
+    Ok(Json.toJson(product))
   }
 
   def updateProduct(id: Long) = Action { implicit request: Request[AnyContent] =>
+    val productToUpdate = Product.listBuffer.find(prod => {
+      prod.id == id
+    }).orNull
+    if (productToUpdate == null) {
+      NotFound("Product with id: " + id + " was not found!")
+    }
+
     val body: AnyContent = request.body
     val jsonBody: Option[JsValue] = body.asJson
 
-//    jsonBody
-//      .map { json => {
-//        val prod = Product.listBuffer.find(prod => {prod.id == id})
-//        prod.copy()
-//              (json \ "id").as[Long),
-//              (json \ "name").as[String],
-//              (json \ "price").as[Int],
-//              (json \ "category").as[String],
-//              (json \ "quantity").as[Int]
-//        )
-//      }
+    jsonBody
+      .foreach {
+        json => {
+          productToUpdate.name = (json \ "name").as[String]
+          productToUpdate.price = (json \ "price").as[Int]
+          productToUpdate.category = (json \ "category").as[String]
+          productToUpdate.quantity = (json \ "quantity").as[Int]
+        }
+      }
 
-    Ok(Json.toJson(Product.listBuffer.find(prod => {prod.id == id})))
+    Ok(Json.toJson(productToUpdate))
   }
 
   def deleteProduct(id: Long) = Action { implicit request: Request[AnyContent] =>
-    val productToDelete = Product.listBuffer.find(prod => {prod.id == id}).get
-    Product.listBuffer -= productToDelete
-    Ok(Json.toJson(productToDelete))
+    val productToDelete = Product.listBuffer.find(prod => {
+      prod.id == id
+    }).orNull
+    try {
+      Product.listBuffer -= productToDelete
+      Ok(Json.toJson(productToDelete))
+    } catch {
+      case e: Exception => NotFound("Product with id: " + id + " was not found!")
+    }
   }
 
   def addProduct() = Action { implicit request: Request[AnyContent] =>
     val body: AnyContent = request.body
     val jsonBody: Option[JsValue] = body.asJson
     var incomingId: Long = -1
+    var productOrNull: Product = null
+    var newProduct: Product = null
 
     jsonBody
-      .map { json => {
+      .foreach { json => {
         incomingId = (json \ "id").as[Long]
-        Product.listBuffer += new Product(
+        productOrNull = Product.listBuffer.find(prod => prod.id == incomingId).orNull
+        newProduct = new Product(
             (json \ "id").as[Long],
             (json \ "name").as[String],
             (json \ "price").as[Int],
@@ -116,10 +135,14 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
             (json \ "quantity").as[Int]
         )
       }}
-
-    Ok(Json.toJson(Product.listBuffer.find(prod => {
-      prod.id == incomingId
-    })))
+    if (productOrNull != null) {
+      NotFound("Product with id: " + incomingId + " already exists!")
+    } else {
+      Product.listBuffer += newProduct
+      Ok(Json.toJson(Product.listBuffer.find(prod => {
+        prod.id == incomingId
+      })))
+    }
   }
 
 
