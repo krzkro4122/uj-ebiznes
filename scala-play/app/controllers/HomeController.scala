@@ -3,11 +3,24 @@ package controllers
 import javax.inject._
 import play.api._
 import play.api.mvc._
+import play.api.http._
 import play.api.libs.json._
-implicit val productsReads = Json.reads[Product]
+import play.api.libs.functional.syntax._
 
-class Product (var id: Long, var price: Int, category: String, quantity: Int) {
+case class Product (var id: Long, name: String, var price: Int, category: String, quantity: Int)
+object Product {
+  var list: List[Product] = {
+    List(
+      Product(0, "Coconut Oil", 69, "Cooking", 420),
+      Product(1, "Elmo's Mask", 99, "Costumes", 10),
+      Product(2, "Beer", 5, "Alcohol", 200)
+    )
+  }
+  def save(product: Product) = {
+    list = list ::: List(product)
+  }
 }
+class Category (var id: Long, var name: String)
 
 /**
  * This controller creates an `Action` to handle HTTP requests to the
@@ -16,8 +29,7 @@ class Product (var id: Long, var price: Int, category: String, quantity: Int) {
 @Singleton
 class HomeController @Inject()(cc: ControllerComponents) extends AbstractController(cc) {
 
-  private val products: List[Product] = List()
-  private val categories: List[Product] = List()
+  private val categories: List[Category] = List()
   private val cart: List[Product] = List()
 
   /**
@@ -42,9 +54,19 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
   def hello(name: String) = Action { implicit request: Request[AnyContent] =>
     Ok(views.html.hello(name))
   }
+
+
   // PRODUCTS
+  implicit val productWrites: Writes[Product] =
+    (JsPath \ "id").write[Long]
+      .and((JsPath \ "name").write[String])
+      .and((JsPath \ "price").write[Int])
+      .and((JsPath \ "category").write[String])
+      .and((JsPath \ "quantity").write[Int])(unlift(Product.unapply))
+
   def showAllProducts() = Action { implicit request: Request[AnyContent] =>
-    Ok("lol")
+    val json = Json.toJson(Product.list)
+    Ok(json)
   }
 
   def showProduct(id: Long) = Action { implicit request: Request[AnyContent] =>
@@ -65,6 +87,8 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
   def addProduct() = Action { implicit request: Request[AnyContent] =>
     Ok("lol")
   }
+
+
   //  CATEGORIES
 def showAllCategories() = Action { implicit request: Request[AnyContent] =>
   Ok("lol")
@@ -88,6 +112,8 @@ def showAllCategories() = Action { implicit request: Request[AnyContent] =>
   def addCategory() = Action { implicit request: Request[AnyContent] =>
     Ok("lol")
   }
+
+
   //  SHOPPING CART
   def showAllCartMembers() = Action { implicit request: Request[AnyContent] =>
     Ok("lol")
@@ -109,6 +135,10 @@ def showAllCategories() = Action { implicit request: Request[AnyContent] =>
   }
 
   def addCartMember() = Action { implicit request: Request[AnyContent] =>
+    Ok("lol")
+  }
+
+  def buyCart() = Action { implicit request: Request[AnyContent] =>
     Ok("lol")
   }
 }
