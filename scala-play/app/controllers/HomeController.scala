@@ -70,10 +70,8 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
   }
 
   def showProduct(id: Long) = Action { implicit request: Request[AnyContent] =>
-    if (true) NotFound(<h1>LOL
-      {id}
-    </h1>)
-    else Ok("LoL: " + id)
+    val json = Json.toJson(Product.list.find(prod => {prod.id == id}))
+    Ok(json)
   }
 
   def updateProduct(id: Long) = Action { implicit request: Request[AnyContent] =>
