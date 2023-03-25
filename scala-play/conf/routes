@@ -15,11 +15,11 @@ PUT     /product/:id                        controllers.ProductController.update
 DELETE  /product/:id                        controllers.ProductController.deleteProduct(id: Long)
 POST    /product                            controllers.ProductController.addProduct()
 # Categories
-#GET     /category                            controllers.HomeController.showAllCategories()
-#GET     /category/:id                        controllers.HomeController.showCategory(id: Long)
-#PUT     /category/:id                        controllers.HomeController.updateCategory(id: Long)
-#DELETE  /category/:id                        controllers.HomeController.deleteCategory(id: Long)
-#POST    /category                            controllers.HomeController.addCategory()
+GET     /category                            controllers.ProductController.showAllCategories()
+GET     /category/:category                  controllers.ProductController.showCategory(category: String)
+PUT     /category/:id                        controllers.ProductController.updateCategory(id: Long)
+DELETE  /category/:id                        controllers.ProductController.deleteCategory(id: Long)
+POST    /category                            controllers.ProductController.addCategory()
 ## Shopping cart
 #GET     /cart                                controllers.HomeController.showAllCartMembers()
 #GET     /cart/:id                            controllers.HomeController.showCartMember(id: Long)

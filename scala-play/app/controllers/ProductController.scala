@@ -14,16 +14,33 @@ case class Product (var id: Long, var name: String, var price: Int, var category
 object Product {
   var listBuffer: ListBuffer[Product] = {
     ListBuffer(
-      Product(0, "Coconut Oil", 69, "Cooking", 420),
-      Product(1, "Elmo's Mask", 99, "Costumes", 10),
-      Product(2, "Beer", 5, "Alcohol", 200)
+      Product(0, "Coconut Oil", 69, "food", 420),
+      Product(1, "Elmo's Mask", 99, "costumes", 10),
+      Product(2, "Beer", 5, "food", 200),
+      Product(3, "Peanut Butter", 6, "food", 100),
+      Product(4, "Jacket for a small dog", 69, "costumes", 100),
+      Product(5, "Taiwan", 1000000, "countries", 1),
+      Product(6, "San Marino", 1, "countries", 1),
     )
   }
   def save(product: Product) = {
     listBuffer += product
   }
 }
-class Category (var id: Long, var name: String)
+
+case class Category (var id: Long, var name: String)
+object Category {
+  var listBuffer: ListBuffer[Category] = {
+    ListBuffer(
+      Category(0, "food"),
+      Category(1, "costumes"),
+      Category(2, "countries")
+    )
+  }
+  def save(category: Category) = {
+    listBuffer += category
+  }
+}
 
 /**
  * This controller creates an `Action` to handle HTTP requests to the
@@ -32,7 +49,6 @@ class Category (var id: Long, var name: String)
 @Singleton
 class ProductController @Inject()(cc: ControllerComponents) extends AbstractController(cc) {
 
-  private val categories: List[Category] = List()
   private val cart: List[Product] = List()
 
   // PRODUCTS
@@ -43,9 +59,13 @@ class ProductController @Inject()(cc: ControllerComponents) extends AbstractCont
       .and((JsPath \ "category").write[String])
       .and((JsPath \ "quantity").write[Int])(unlift(Product.unapply))
 
+  // CATEGORIES
+  implicit val categoryWrites: Writes[Category] =
+    (JsPath \ "id").write[Long]
+      .and((JsPath \ "name").write[String])(unlift(Category.unapply))
+
   def showAllProducts() = Action { implicit request: Request[AnyContent] =>
-    val json = Json.toJson(Product.listBuffer)
-    Ok(json)
+    Ok(Json.toJson(Product.listBuffer))
   }
 
   def showProduct(id: Long) = Action { implicit request: Request[AnyContent] =>
@@ -127,14 +147,19 @@ class ProductController @Inject()(cc: ControllerComponents) extends AbstractCont
 
   //  CATEGORIES
   def showAllCategories() = Action { implicit request: Request[AnyContent] =>
-    Ok("lol")
+    Ok(Json.toJson(Category.listBuffer))
   }
 
-  def showCategory(id: Long) = Action { implicit request: Request[AnyContent] =>
-    if (true) NotFound(<h1>LOL
-      {id}
-    </h1>)
-    else Ok("LoL: " + id)
+  def showCategory(category: String) = Action { implicit request: Request[AnyContent] =>
+    val products = Product.listBuffer.filter(prod => {
+      prod.category == category
+    })
+
+    try {
+      Ok(Json.toJson(products))
+    } catch {
+      case e: Exception => NotFound("Product of category: " + category + " were not found!")
+    }
   }
 
   def updateCategory(id: Long) = Action { implicit request: Request[AnyContent] =>
