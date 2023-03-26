@@ -109,7 +109,7 @@ class ProductController @Inject()(cc: ControllerComponents) extends AbstractCont
     }).orNull
     try {
       Product.listBuffer -= productToDelete
-      Ok(Json.toJson(productToDelete))
+      Accepted(Json.toJson(productToDelete))
     } catch {
       case e: Exception => NotFound("Product with id: " + id + " was not found!")
     }
@@ -138,7 +138,10 @@ class ProductController @Inject()(cc: ControllerComponents) extends AbstractCont
       NotFound("Product with id: " + incomingId + " already exists!")
     } else {
       Product.listBuffer += newProduct
-      Ok(Json.toJson(Product.listBuffer.find(prod => {
+      if (!Category.listBuffer.exists(item => item.name == newProduct.category)) {
+        Category.listBuffer += new Category(Category.listBuffer.last.id + 1, newProduct.category)
+      }
+      Created(Json.toJson(Product.listBuffer.find(prod => {
         prod.id == incomingId
       })))
     }
@@ -155,15 +158,37 @@ class ProductController @Inject()(cc: ControllerComponents) extends AbstractCont
       prod.category == category
     })
 
-    try {
-      Ok(Json.toJson(products))
-    } catch {
-      case e: Exception => NotFound("Product of category: " + category + " were not found!")
+    if (!Category.listBuffer.exists(item => item.name == category)) {
+      NotFound("Category " + category + " not found!")
+    } else {
+      if (products.isEmpty) {
+        NotFound("There's no products in category: " + category)
+      } else {
+        Ok(Json.toJson(products))
+      }
     }
   }
 
   def updateCategory(id: Long) = Action { implicit request: Request[AnyContent] =>
-    Ok("lol")
+    val categoryToUpdate = Category.listBuffer.find(cat => {
+      cat.id == id
+    }).orNull
+
+    val body: AnyContent = request.body
+    val jsonBody: Option[JsValue] = body.asJson
+
+    try {
+      jsonBody
+        .foreach {
+          json => {
+            categoryToUpdate.name = (json \ "name").as[String]
+          }
+        }
+
+      Ok(Json.toJson(categoryToUpdate))
+    } catch {
+      case e: Exception => NotFound("Category with id: " + id + " was not found!")
+    }
   }
 
   def deleteCategory(id: Long) = Action { implicit request: Request[AnyContent] =>
