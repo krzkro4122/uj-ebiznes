@@ -21,12 +21,12 @@ PUT     /category/:id                        controllers.ProductController.updat
 DELETE  /category/:id                        controllers.ProductController.deleteCategory(id: Long)
 POST    /category                            controllers.ProductController.addCategory()
 ## Shopping cart
-#GET     /cart                                controllers.HomeController.showAllCartMembers()
-#GET     /cart/:id                            controllers.HomeController.showCartMember(id: Long)
-#PUT     /cart/:id                            controllers.HomeController.updateCartMember(id: Long)
-#DELETE  /cart/:id                            controllers.HomeController.deleteCartMember(id: Long)
-#POST    /cart                                controllers.HomeController.addCartMember()
-#POST    /cart/buy                            controllers.HomeController.buyCart()
+GET     /cart                                controllers.ProductController.showAllCartMembers()
+GET     /cart/:id                            controllers.ProductController.showCartMember(id: Long)
+PUT     /cart/:id                            controllers.ProductController.updateCartMember(id: Long)
+DELETE  /cart/:id                            controllers.ProductController.deleteCartMember(id: Long)
+POST    /cart                                controllers.ProductController.addCartMember()
+POST    /cart/buy                            controllers.ProductController.buyCart()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

@@ -1,14 +1,11 @@
 package controllers
 
 import javax.inject._
-import play.api._
 import play.api.mvc._
-import play.api.http._
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
-
 import scala.collection.mutable.ListBuffer
-import scala.concurrent.ExecutionException
+import play.api.libs.json.{JsPath, Reads}
 
 case class Product (var id: Long, var name: String, var price: Int, var category: String, var quantity: Int)
 object Product {
@@ -26,6 +23,13 @@ object Product {
   def save(product: Product) = {
     listBuffer += product
   }
+  implicit val productReads: Reads[Product] = (
+    (JsPath \ "id").read[Long]and
+      (JsPath\ "name").read[String]and
+      (JsPath\ "price").read[Int]and
+      (JsPath\ "category").read[String]and
+      (JsPath\ "quantity").read[Int]
+    )(Product.apply _)
 }
 
 case class Category (var id: Long, var name: String)
@@ -39,6 +43,16 @@ object Category {
   }
   def save(category: Category) = {
     listBuffer += category
+  }
+}
+
+case class CartMember (var id: Long, var name: String, var price: Int, var category: String, var quantity: Int)
+object CartMember {
+  var listBuffer: ListBuffer[CartMember] = {
+    ListBuffer()
+  }
+  def save(cartMember: CartMember) = {
+    listBuffer += cartMember
   }
 }
 
@@ -63,6 +77,14 @@ class ProductController @Inject()(cc: ControllerComponents) extends AbstractCont
   implicit val categoryWrites: Writes[Category] =
     (JsPath \ "id").write[Long]
       .and((JsPath \ "name").write[String])(unlift(Category.unapply))
+
+  // CART MEMBERS
+  implicit val cartMemberWrites: Writes[CartMember] =
+    (JsPath \ "id").write[Long]
+      .and((JsPath \ "name").write[String])
+      .and((JsPath \ "price").write[Int])
+      .and((JsPath \ "category").write[String])
+      .and((JsPath \ "quantity").write[Int])(unlift(CartMember.unapply))
 
   def showAllProducts() = Action { implicit request: Request[AnyContent] =>
     Ok(Json.toJson(Product.listBuffer))
@@ -233,26 +255,101 @@ class ProductController @Inject()(cc: ControllerComponents) extends AbstractCont
 
   //  SHOPPING CART
   def showAllCartMembers() = Action { implicit request: Request[AnyContent] =>
-    Ok("lol")
+    Ok(Json.toJson(CartMember.listBuffer))
   }
 
   def showCartMember(id: Long) = Action { implicit request: Request[AnyContent] =>
-    if (true) NotFound(<h1>LOL
-      {id}
-    </h1>)
-    else Ok("LoL: " + id)
+    val cartMember = CartMember.listBuffer.find(cartMem => {
+      cartMem.id == id
+    }).orNull
+
+    try {
+      Ok(Json.toJson(cartMember))
+    } catch {
+      case e: Exception => NotFound("Product of id: " + id + " was not found in your cart!")
+    }
   }
 
   def updateCartMember(id: Long) = Action { implicit request: Request[AnyContent] =>
-    Ok("lol")
+//    val productToUpdate = Product.listBuffer.find(prod => {
+//      prod.id == id
+//    }).orNull
+//
+//    val body: AnyContent = request.body
+//    val jsonBody: Option[JsValue] = body.asJson
+//
+//    try {
+//      jsonBody
+//        .foreach {
+//          json => {
+//            productToUpdate.name = (json \ "name").as[String]
+//            productToUpdate.price = (json \ "price").as[Int]
+//            productToUpdate.category = (json \ "category").as[String]
+//            productToUpdate.quantity = (json \ "quantity").as[Int]
+//          }
+//        }
+//
+//      Ok(Json.toJson(productToUpdate))
+//    } catch {
+//      case e: Exception => NotFound("Product with id: " + id + " was not found!")
+//    }
+    Ok("LOL")
   }
 
   def deleteCartMember(id: Long) = Action { implicit request: Request[AnyContent] =>
-    Ok("lol")
+    val cartMemberToDelete = CartMember.listBuffer.find(cartMem => {
+      cartMem.id == id
+    }).orNull
+    try {
+      CartMember.listBuffer -= cartMemberToDelete
+      Accepted(Json.toJson(cartMemberToDelete))
+    } catch {
+      case e: Exception => NotFound("Product with id: " + id + " was not found in your cart!")
+    }
   }
 
   def addCartMember() = Action { implicit request: Request[AnyContent] =>
-    Ok("lol")
+    val body: AnyContent = request.body
+    val jsonBody: Option[JsValue] = body.asJson
+    var newCartMember: CartMember = null
+
+    jsonBody
+      .foreach { json => {
+        newCartMember = new CartMember(
+          (json \ "id").as[Long],
+          (json \ "name").as[String],
+          (json \ "price").as[Int],
+          (json \ "category").as[String],
+          (json \ "quantity").as[Int]
+        )
+      }
+    }
+
+    // If there is such product in stock
+    if (Product.listBuffer.exists(prod => prod.id == newCartMember.id)) {
+      val actualProductCount = Product.listBuffer.find(prod => prod.id == newCartMember.id).get.quantity
+      // If this product is already in the cart
+      if (CartMember.listBuffer.exists(cartMem => cartMem.id == newCartMember.id)) {
+        val updatedCartMember = CartMember.listBuffer.find(cartMem => cartMem.id == newCartMember.id).get
+        // If there's enough of this product in stock
+        if (actualProductCount >= newCartMember.quantity + updatedCartMember.quantity) {
+          updatedCartMember.quantity += newCartMember.quantity
+          Created(Json.toJson(updatedCartMember))
+        } else {
+          NotAcceptable("Not enough of the '" + newCartMember.name + "'(id: " + newCartMember.id + ") product in stock! [Requested: " + (newCartMember.quantity + actualProductCount) + " / Available: " + actualProductCount + "]")
+        }
+      } else { // If this product isn't already in the cart
+        // and There's enough of it in stock
+        if (actualProductCount >= newCartMember.quantity) {
+          CartMember.listBuffer += newCartMember
+          Created(Json.toJson(newCartMember))
+        } else {
+          NotAcceptable("Not enough of the '" + newCartMember.name + "'(id: " + newCartMember.id + ") product in stock! [Requested: " + newCartMember.quantity + " / Available: " + actualProductCount + "]")
+        }
+      }
+    } else {
+      NotFound("Product of id: " + newCartMember.id + " not found in stock!")
+    }
   }
 
   def buyCart() = Action { implicit request: Request[AnyContent] =>
