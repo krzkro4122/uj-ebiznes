@@ -192,11 +192,42 @@ class ProductController @Inject()(cc: ControllerComponents) extends AbstractCont
   }
 
   def deleteCategory(id: Long) = Action { implicit request: Request[AnyContent] =>
-    Ok("lol")
+    val categoryToDelete = Category.listBuffer.find(cat => {
+      cat.id == id
+    }).orNull
+    try {
+      Category.listBuffer -= categoryToDelete
+      Accepted(Json.toJson(categoryToDelete))
+    } catch {
+      case e: Exception => NotFound("Category with id: " + id + " was not found!")
+    }
   }
 
   def addCategory() = Action { implicit request: Request[AnyContent] =>
-    Ok("lol")
+    val body: AnyContent = request.body
+    val jsonBody: Option[JsValue] = body.asJson
+    var incomingId: Long = -1
+    var categoryOrNull: Category = null
+    var newCategory: Category = null
+
+    jsonBody
+      .foreach { json => {
+        incomingId = (json \ "id").as[Long]
+        categoryOrNull = Category.listBuffer.find(cat => cat.id == incomingId).orNull
+        newCategory = new Category(
+          (json \ "id").as[Long],
+          (json \ "name").as[String]
+        )
+      }
+      }
+    if (categoryOrNull != null) {
+      NotFound("Category with id: " + incomingId + " already exists!")
+    } else {
+      Category.listBuffer += newCategory
+      Created(Json.toJson(Category.listBuffer.find(cat => {
+        cat.id == incomingId
+      })))
+    }
   }
 
 
