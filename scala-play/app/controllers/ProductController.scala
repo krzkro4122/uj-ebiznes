@@ -271,13 +271,6 @@ class ProductController @Inject()(cc: ControllerComponents) extends AbstractCont
   }
 
   def updateCartMember(id: Long) = Action { implicit request: Request[AnyContent] =>
-//    val productToUpdate = Product.listBuffer.find(prod => {
-//      prod.id == id
-//    }).orNull
-//
-//    val body: AnyContent = request.body
-//    val jsonBody: Option[JsValue] = body.asJson
-//
 //    try {
 //      jsonBody
 //        .foreach {
@@ -293,7 +286,42 @@ class ProductController @Inject()(cc: ControllerComponents) extends AbstractCont
 //    } catch {
 //      case e: Exception => NotFound("Product with id: " + id + " was not found!")
 //    }
-    Ok("LOL")
+
+    try {
+
+      val cartMemberToUpdate = CartMember.listBuffer.find(cartMem => {
+        cartMem.id == id
+      }).get
+
+      val body: AnyContent = request.body
+      val jsonBody: Option[JsValue] = body.asJson
+      var quantityToSet = 0
+
+      jsonBody
+        .foreach {
+          json => {
+            quantityToSet = (json \ "quantity").as[Int]
+        }
+      }
+
+      try {
+        val actualProductCount = Product.listBuffer.find(prod => prod.id == cartMemberToUpdate.id).get.quantity
+
+        // If there's enough of this product in stock
+        if (actualProductCount >= quantityToSet) {
+          cartMemberToUpdate.quantity = quantityToSet
+          Ok(Json.toJson(cartMemberToUpdate))
+        } else {
+          NotAcceptable("Not enough of the '" + cartMemberToUpdate.name + "'(id: " + cartMemberToUpdate.id + ") product in stock! [Requested: " + (quantityToSet) + " / Available: " + actualProductCount + "]")
+        }
+
+      } catch {
+        case e: Exception => NotFound("Product with id: " + id + " not found in stock!")
+      }
+
+    } catch {
+      case e: Exception => NotFound("Product with id: " + id + " not found in your cart!")
+    }
   }
 
   def deleteCartMember(id: Long) = Action { implicit request: Request[AnyContent] =>
@@ -327,17 +355,11 @@ class ProductController @Inject()(cc: ControllerComponents) extends AbstractCont
 
     // If there is such product in stock
     if (Product.listBuffer.exists(prod => prod.id == newCartMember.id)) {
+
       val actualProductCount = Product.listBuffer.find(prod => prod.id == newCartMember.id).get.quantity
       // If this product is already in the cart
       if (CartMember.listBuffer.exists(cartMem => cartMem.id == newCartMember.id)) {
-        val updatedCartMember = CartMember.listBuffer.find(cartMem => cartMem.id == newCartMember.id).get
-        // If there's enough of this product in stock
-        if (actualProductCount >= newCartMember.quantity + updatedCartMember.quantity) {
-          updatedCartMember.quantity += newCartMember.quantity
-          Created(Json.toJson(updatedCartMember))
-        } else {
-          NotAcceptable("Not enough of the '" + newCartMember.name + "'(id: " + newCartMember.id + ") product in stock! [Requested: " + (newCartMember.quantity + actualProductCount) + " / Available: " + actualProductCount + "]")
-        }
+        NotAcceptable("The product with id: " + newCartMember.id + " is already in your Cart!\n Consider using the PUT /cart/" + newCartMember.id + " endpoint to change it's quantity\nOR\n the DELETE /cart/" + newCartMember.id + " endpoint to remove it from your cart.")
       } else { // If this product isn't already in the cart
         // and There's enough of it in stock
         if (actualProductCount >= newCartMember.quantity) {
@@ -347,6 +369,7 @@ class ProductController @Inject()(cc: ControllerComponents) extends AbstractCont
           NotAcceptable("Not enough of the '" + newCartMember.name + "'(id: " + newCartMember.id + ") product in stock! [Requested: " + newCartMember.quantity + " / Available: " + actualProductCount + "]")
         }
       }
+
     } else {
       NotFound("Product of id: " + newCartMember.id + " not found in stock!")
     }
