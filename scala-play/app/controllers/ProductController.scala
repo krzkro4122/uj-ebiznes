@@ -376,6 +376,18 @@ class ProductController @Inject()(cc: ControllerComponents) extends AbstractCont
   }
 
   def buyCart() = Action { implicit request: Request[AnyContent] =>
-    Ok("lol")
+
+    if (CartMember.listBuffer.isEmpty) {
+      NotAcceptable("Your cart is empty! Add some products in order to buy them.")
+    } else {
+
+      // Check if the purchase can be made (if the quantities in stock are higher then in cart)
+//      var isQuantityOK: Boolean = true
+//      for (cartMem <- CartMember.listBuffer) {
+//
+//      }
+
+    }
+
   }
 }
