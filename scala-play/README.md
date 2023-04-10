@@ -1,37 +1,32 @@
-# Play Hello World Web Tutorial for Scala
+# Play e-commerce CRUD
 
-To follow the steps in this tutorial, you will need the correct version of Java and sbt. The tutorial requires:
+A barebones e-commerce CRUD web application based on a simple `REST API`.
 
-* Java Software Developer's Kit (SE) 1.8 or higher
-* sbt 0.13.18 or higher (we recommend 1.7.2). Note: if you downloaded this project as a zip file from https://developer.lightbend.com, the file includes an sbt distribution for your convenience.
+## Features
+- A `ProductController` implementation
+- Working CRUD endpoints for `Products`, `Categories` and `Cart` (index available below)
 
-To check your Java version, enter the following in a command window:
+Used technologies:
+- `Scala` (version 2)
+- the `Play` web framework
+- `insomnia` as a open-source `Postman` alternative 
 
-```bash
-java -version
+## Usage
+The web application can be run with 
 ```
+sbt run
+``` 
+and tested with the supplied `insomniaCollection.json` file.
 
-To check your sbt version, enter the following in a command window:
+## Available endpoints 
+Available endpoints can be imported to `insomnia` from the `insomniaCollection.json` file:<br/>
+(These are just endpoint names, not the actual URL/URI paths)<br/>
+![image](https://user-images.githubusercontent.com/75375838/230937947-52df615c-8282-43b9-9196-300b4b19fd30.png)
 
-```bash
-sbt sbtVersion
-```
+## Example output
+- The `showCategory` endpoint:<br/>
+![image](https://user-images.githubusercontent.com/75375838/230939147-6a0032e3-aad1-48b3-bef1-e856d2292ad3.png)
+- Using the `addCartMember` enpoint the second time on the same prouct:<br/>
+![image](https://user-images.githubusercontent.com/75375838/230939359-46db3f61-c7ed-4e5f-9b45-73fff9f63f14.png)
 
-If you do not have the required versions, follow these links to obtain them:
-
-* [Java SE](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
-* [sbt](http://www.scala-sbt.org/download.html)
-
-## Build and run the project
-
-This example Play project was created from a seed template. It includes all Play components and an Akka HTTP server. The project is also configured with filters for Cross-Site Request Forgery (CSRF) protection and security headers.
-
-To build and run the project:
-
-1. Use a command window to change into the example project directory, for example: `cd play-scala-hello-world-tutorial`
-
-2. Build the project. Enter: `sbt run`. The project builds and starts the embedded HTTP server. Since this downloads libraries and dependencies, the amount of time required depends partly on your connection's speed.
-
-3. After the message `Server started, ...` displays, enter the following URL in a browser: <http://localhost:9000>
-
-The Play application responds: `Welcome to the Hello World Tutorial!`
+etc. Those all can be checked with `insomnia`.
