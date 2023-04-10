@@ -1,0 +1,7 @@
+authtoken: 2OFJvcfSl6nygUzTlrz1qdiunwI_4LZFsmHGhC6HkehRTJyvD
+region: eu
+
+tunnels:
+  tunnel:
+    proto: http
+    addr: localhost:9000

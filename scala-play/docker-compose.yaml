@@ -1,0 +1,19 @@
+version: '3.9'
+
+services:
+  play-server1:
+    build: .
+    command:
+      - "./sbt run"
+    network_mode: "host"
+  play-tunnel1:
+    build: ./docker-ngrok
+    environment:
+      - NGROK_AUTHTOKEN=2OFJvcfSl6nygUzTlrz1qdiunwI_4LZFsmHGhC6HkehRTJyvD
+    command:
+      - "ngrok http 9000"
+    network_mode: "host"
+
+volumes:
+  play-scala:
+    external: true

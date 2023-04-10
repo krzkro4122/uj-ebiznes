@@ -403,7 +403,7 @@ class ProductController @Inject()(cc: ControllerComponents) extends AbstractCont
         CartMember.listBuffer.clear()
         Ok(Json.toJson(temporaryBuffer))
 
-      }
+      };
 
 
     }
