@@ -376,18 +376,36 @@ class ProductController @Inject()(cc: ControllerComponents) extends AbstractCont
   }
 
   def buyCart() = Action { implicit request: Request[AnyContent] =>
-
     if (CartMember.listBuffer.isEmpty) {
       NotAcceptable("Your cart is empty! Add some products in order to buy them.")
     } else {
 
+
       // Check if the purchase can be made (if the quantities in stock are higher then in cart)
-//      var isQuantityOK: Boolean = true
-//      for (cartMem <- CartMember.listBuffer) {
-//
-//      }
+      var isQuantityOK = true
+      for (member <- CartMember.listBuffer) {
+        val productStock = Product.listBuffer.find(prod => prod.id == member.id).get
+        if (productStock.quantity < member.quantity) {
+          isQuantityOK = false
+        }
+      }
+      if (!isQuantityOK) {
+        NotAcceptable("The order's quantities exceed the available stock!")
+      } else {
+
+        // BUY
+        val temporaryBuffer: ListBuffer[CartMember] = ListBuffer()
+        for (member <- CartMember.listBuffer) {
+          temporaryBuffer += member
+          val productStock = Product.listBuffer.find(prod => prod.id == member.id).get
+          productStock.quantity -= member.quantity
+        }
+        CartMember.listBuffer.clear()
+        Ok(Json.toJson(temporaryBuffer))
+
+      }
+
 
     }
-
   }
 }
