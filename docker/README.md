@@ -13,5 +13,5 @@ The `Dockerfile` contains instructions that produce an image that:
 The end of the docker-compose command output should look along the line of this:
 ![image](https://user-images.githubusercontent.com/75375838/230917847-9d296903-6659-4002-aff3-38eaccf533fa.png)
 
-Docker image's public URL: https://hub.docker.com/r/layor/ebiznes-docker
+Docker image's public URL: https://hub.docker.com/r/layor/ebiznes-docker</br>
 ![image](https://user-images.githubusercontent.com/75375838/230918261-4570f68a-581b-480d-9347-ceb471bf3437.png)
