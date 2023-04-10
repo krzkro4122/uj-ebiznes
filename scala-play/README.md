@@ -26,7 +26,10 @@ Available endpoints can be imported to `insomnia` from the `insomniaCollection.j
 ## Example output
 - The `showCategory` endpoint:<br/>
 ![image](https://user-images.githubusercontent.com/75375838/230939147-6a0032e3-aad1-48b3-bef1-e856d2292ad3.png)
-- Using the `addCartMember` enpoint the second time on the same prouct:<br/>
+- Using the `addCartMember` enpoint the first and then the second time on the same prouct:<br/>
+![image](https://user-images.githubusercontent.com/75375838/230953460-89d99bff-e379-4bf1-a6b1-5eb3ad7c2416.png)
 ![image](https://user-images.githubusercontent.com/75375838/230939359-46db3f61-c7ed-4e5f-9b45-73fff9f63f14.png)
+
+Note: There are many supported usage scenarios, f.e. buying a certain quantity shortens the stock quantity of that product etc.
 
 etc. Those all can be checked with `insomnia`.
