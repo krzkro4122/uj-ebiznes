@@ -1,4 +1,4 @@
-module go-gorn
+module echo-go-gorn
 
 go 1.20
 

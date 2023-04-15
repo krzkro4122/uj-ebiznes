@@ -3,11 +3,12 @@ package main
 import (
 	"errors"
 	"fmt"
+	"net/http"
+	"os"
+
 	"github.com/labstack/echo/v4"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-	"net/http"
-	"os"
 )
 
 // Connect to db with gorm
@@ -102,11 +103,18 @@ func deleteProduct(c echo.Context) error {
 }
 
 func define_endpoints(e *echo.Echo) {
+	// Product
 	e.GET("/product/:id", readProduct)
 	e.GET("/product", readAllProducts)
 	e.PUT("/product/:id", updateProduct)
 	e.POST("/product", createProduct)
 	e.DELETE("/product/:id", deleteProduct)
+	// Cart
+	// e.GET("/product/:id", readProduct)
+	// e.GET("/product", readAllProducts)
+	// e.PUT("/product/:id", updateProduct)
+	// e.POST("/product", createProduct)
+	// e.DELETE("/product/:id", deleteProduct)
 }
 
 func serve(port string) {
@@ -126,6 +134,6 @@ func configure_db() *gorm.DB {
 
 func main() {
 	port := get_port("9000")
-	fmt.Println("Running the server on: localhost:%s", port)
+	fmt.Printf("Running the server on: localhost:%s\n", port)
 	serve(port)
 }
