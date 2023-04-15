@@ -15,11 +15,11 @@ func define_endpoints(e *echo.Echo) {
 	e.POST("/product", controller.CreateProduct)
 	e.DELETE("/product/:id", controller.DeleteProduct)
 	// Cart
-	// e.GET("/product/:id", readProduct)
-	// e.GET("/product", readAllProducts)
-	// e.PUT("/product/:id", updateProduct)
-	// e.POST("/product", createProduct)
-	// e.DELETE("/product/:id", deleteProduct)
+	e.GET("/product/:id", controller.ReadProduct)
+	e.GET("/product", controller.ReadAllCartMembers)
+	e.PUT("/product/:id", controller.UpdateCartMember)
+	e.POST("/product", controller.CreateCartMember)
+	e.DELETE("/product/:id", controller.DeleteCartMember)
 }
 
 func Serve(port string) {
