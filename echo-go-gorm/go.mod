@@ -1,4 +1,4 @@
-module echo-go-gorn
+module github.com/krzkro4122/echogogorm
 
 go 1.20
 
@@ -19,3 +19,5 @@ require (
 	gorm.io/driver/sqlite v1.5.0 // indirect
 	gorm.io/gorm v1.25.0 // indirect
 )
+
+replace github.com/krzkro4122/echogogorm v0.0.0 => ./
