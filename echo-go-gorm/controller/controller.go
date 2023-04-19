@@ -115,7 +115,12 @@ func DeleteProduct(c echo.Context) error {
 	var product model.Product
 	product, err := get_product(id)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return c.JSON(http.StatusNotFound, map[string]string{"error": "Product not found"})
+		return c.JSON(
+			http.StatusNotFound,
+			map[string]string{
+				"error": "Product not found",
+			},
+		)
 	}
 	db.Db.Delete(&product)
 	return c.JSON(http.StatusOK, product)
@@ -126,7 +131,12 @@ func ReadCartMember(c echo.Context) error {
 	id := c.Param("id")
 	product, err := get_cart_member(id)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return c.JSON(http.StatusNotFound, map[string]string{"error": "Product not found"})
+		return c.JSON(
+			http.StatusNotFound,
+			map[string]string{
+				"error": "Product not found",
+			},
+		)
 	}
 	return c.JSON(http.StatusOK, product)
 }
@@ -221,7 +231,12 @@ func DeleteCartMember(c echo.Context) error {
 	var cartMember model.CartMember
 	cartMember, err := get_cart_member(id)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return c.JSON(http.StatusNotFound, map[string]string{"error": "Cart member with ID " + id + " not in cart"})
+		return c.JSON(
+			http.StatusNotFound,
+			map[string]string{
+				"error": "Cart member with ID " + id + " not in cart",
+			},
+		)
 	}
 	db.Db.Delete(&cartMember)
 	return c.JSON(http.StatusOK, cartMember)
