@@ -2,7 +2,9 @@ package controller
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/krzkro4122/echogogorm/db"
 	"github.com/krzkro4122/echogogorm/model"
@@ -20,6 +22,21 @@ func get_product(id string) (model.Product, error) {
 		}
 	}
 	return product, nil
+}
+
+func get_cart_member(id string) (model.CartMember, error) {
+	var cartMember model.CartMember
+	if err := db.Db.First(&cartMember, id).Error; err != nil {
+		// Return a 404 response if the product does not exist
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return cartMember, err
+		}
+	}
+	return cartMember, nil
+}
+
+type IPurchase struct {
+	Money int `json:"money"`
 }
 
 // PRODUCTS
@@ -82,7 +99,7 @@ func DeleteProduct(c echo.Context) error {
 // CART
 func ReadCartMember(c echo.Context) error {
 	id := c.Param("id")
-	product, err := get_product(id)
+	product, err := get_cart_member(id)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return c.JSON(http.StatusNotFound, map[string]string{"error": "Product not found"})
 	}
@@ -90,48 +107,100 @@ func ReadCartMember(c echo.Context) error {
 }
 
 func ReadAllCartMembers(c echo.Context) error {
-	var products []model.Product
-	db.Db.Find(&products)
-	return c.JSON(http.StatusOK, products)
+	var cart []model.CartMember
+	db.Db.Find(&cart)
+	return c.JSON(http.StatusOK, cart)
 }
 
 func UpdateCartMember(c echo.Context) error {
 	id := c.Param("id")
-	var product model.Product
-	product, err := get_product(id)
+	var cartMember model.CartMember
+	cartMember, err := get_cart_member(id)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return c.JSON(http.StatusNotFound, map[string]string{"error": "Product not found"})
+		return c.JSON(http.StatusNotFound, map[string]string{"error": "Product with ID " + id + "not found in cart"})
 	}
-	db.Db.Model(&product).Update("Name", "LOOOOOL")
-	return c.JSON(http.StatusOK, product)
+	db.Db.Model(&cartMember).Update("Name", "LOOOOOL")
+	return c.JSON(http.StatusOK, cartMember)
 }
 
 func CreateCartMember(c echo.Context) error {
 	// Create a new instance of your struct to hold the JSON data
-	var body model.Product
+	var body model.CartMember
 
 	// Bind the JSON data from the request body to your struct
 	if err := c.Bind(&body); err != nil {
 		return err
 	}
-	var product = model.Product{
-		ID:       body.ID,
-		Name:     body.Name,
-		Price:    body.Price,
-		Category: body.Category,
-		Quantity: body.Quantity,
+
+	var product model.Product
+	product, err := get_product(strconv.Itoa(body.ProductID))
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return c.JSON(http.StatusNotFound, map[string]string{"error": "Product with ID " + strconv.Itoa(body.ProductID) + "not in stock"})
 	}
-	db.Db.Create(&product)
-	return c.JSON(http.StatusOK, product)
+
+	var cartMember = model.CartMember{
+		ID:        body.ID,
+		ProductID: body.ProductID,
+		Name:      product.Name,
+		Price:     product.Price,
+		Category:  product.Category,
+		Quantity:  body.Quantity,
+	}
+	db.Db.Create(&cartMember)
+	return c.JSON(http.StatusOK, cartMember)
 }
 
 func DeleteCartMember(c echo.Context) error {
 	id := c.Param("id")
-	var product model.Product
-	product, err := get_product(id)
+	var cartMember model.CartMember
+	cartMember, err := get_cart_member(id)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return c.JSON(http.StatusNotFound, map[string]string{"error": "Product not found"})
+		return c.JSON(http.StatusNotFound, map[string]string{"error": "Cart member with ID " + id + "not found"})
 	}
-	db.Db.Delete(&product)
-	return c.JSON(http.StatusOK, product)
+	db.Db.Delete(&cartMember)
+	return c.JSON(http.StatusOK, cartMember)
+}
+
+func BuyCart(c echo.Context) error {
+	var body IPurchase
+
+	if err := c.Bind(&body); err != nil {
+		return err
+	}
+
+	var cart []model.CartMember
+	db.Db.Find(&cart)
+
+	for _, cartMember := range cart {
+		product, err := get_product(strconv.Itoa(cartMember.ProductID))
+		if (product.Quantity < cartMember.Quantity || err != nil) {
+			return c.JSON(http.StatusBadRequest, map[string]string{
+					"error": fmt.Sprintf(
+						"Not enough product in stock, got: %d, need: %d",
+						product.Quantity,
+						cartMember.Quantity,
+					),
+				})
+		}
+	}
+
+	totalPrice := 0
+	for _, cartMember := range cart {
+		totalPrice += cartMember.Price * cartMember.Quantity
+	}
+
+	if body.Money < totalPrice {
+		return c.JSON(http.StatusBadRequest, map[string]string{
+			"error": fmt.Sprintf(
+				"Not enough money to buy, got: $%d, total cost: $%d (lacking $%d)",
+				totalPrice,
+				body.Money,
+				totalPrice-body.Money,
+			),
+		})
+	}
+
+	db.Db.Delete(&cart)
+	return c.JSON(http.StatusOK, totalPrice)
 }

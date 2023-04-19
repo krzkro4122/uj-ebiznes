@@ -14,5 +14,6 @@ func configure_db() *gorm.DB {
 		panic("failed to connect database")
 	}
 	db.Table("products")
+	db.Table("cart_members")
 	return db
 }

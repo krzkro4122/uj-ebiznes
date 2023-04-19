@@ -13,3 +13,13 @@ type Product struct {
 	Category string
 	Quantity int
 }
+
+type CartMember struct {
+	gorm.Model
+	ID        int
+	ProductID int
+	Name      string
+	Price     int
+	Category  string
+	Quantity  int
+}

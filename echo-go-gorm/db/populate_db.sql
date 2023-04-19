@@ -9,6 +9,19 @@ CREATE TABLE Products (
     quantity INTEGER
 );
 
+CREATE TABLE Cart_Members (
+    id INTEGER PRIMARY KEY,
+    product_id INTEGER,
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP,
+    deleted_at TIMESTAMP,
+    name TEXT,
+    price INTEGER,
+    category TEXT,
+    quantity INTEGER,
+    FOREIGN KEY (product_id) REFERENCES Products(id)
+);
+
 INSERT INTO Products (created_at, updated_at, deleted_at, name, price, category, quantity)
 VALUES
     ('2023-04-15 10:00:00', '2023-04-15 10:00:00', NULL, 'Product A', 10, 'Category 1', 100),
