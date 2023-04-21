@@ -25,10 +25,10 @@ object Product {
   }
   implicit val productReads: Reads[Product] = (
     (JsPath \ "id").read[Long]and
-      (JsPath\ "name").read[String]and
-      (JsPath\ "price").read[Int]and
-      (JsPath\ "category").read[String]and
-      (JsPath\ "quantity").read[Int]
+      (JsPath \ "name").read[String]and
+      (JsPath \ "price").read[Int]and
+      (JsPath \ "category").read[String]and
+      (JsPath \ "quantity").read[Int]
     )(Product.apply _)
 }
 
