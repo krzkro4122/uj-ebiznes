@@ -1,3 +1,7 @@
+DROP TABLE Products;
+DROP TABLE Categories;
+DROP TABLE Cart_Members;
+
 CREATE TABLE Products (
     id INTEGER PRIMARY KEY,
     created_at TIMESTAMP,
