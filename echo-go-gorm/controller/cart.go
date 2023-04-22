@@ -30,12 +30,13 @@ type IPurchase struct {
 // CART
 func ReadCartMember(c echo.Context) error {
 	id := c.Param("id")
+
 	product, err := get_cart_member(id)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return c.JSON(
 			http.StatusNotFound,
 			map[string]string{
-				"error": "Product not found",
+				"error": "Product with ID: " + id + " not found",
 			},
 		)
 	}
@@ -51,7 +52,6 @@ func ReadAllCartMembers(c echo.Context) error {
 func UpdateCartMember(c echo.Context) error {
 	id := c.Param("id")
 	var body model.CartMember
-	var cartMember model.CartMember
 
 	// Bind the JSON data from the request body to your struct
 	if err := c.Bind(&body); err != nil {
@@ -103,25 +103,44 @@ func CreateCartMember(c echo.Context) error {
 		return err
 	}
 
-	var product model.Product
 	product, err := get_product(strconv.Itoa(body.ProductID))
-
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return c.JSON(
 			http.StatusNotFound,
 			map[string]string{
-				"error": "Product with ID " + strconv.Itoa(body.ProductID) + " not in stock",
+				"error": "Product with ID: " + strconv.Itoa(body.ProductID) + " not in stock",
+			},
+		)
+	}
+
+	_cartMember, err := get_cart_member(strconv.Itoa(body.ID))
+	if !errors.Is(err, gorm.ErrRecordNotFound) {
+		return c.JSON(
+			http.StatusNotFound,
+			map[string]string{
+				"error": "Cart item with ID: " + strconv.Itoa(_cartMember.ID) + " already exists",
+			},
+		)
+	}
+
+	category, _err := get_category(strconv.Itoa(body.CategoryID))
+	if errors.Is(_err, gorm.ErrRecordNotFound) {
+		return c.JSON(
+			http.StatusNotFound,
+			map[string]string{
+				"error": "Category with ID: " + strconv.Itoa(body.CategoryID) + " not found",
 			},
 		)
 	}
 
 	var cartMember = model.CartMember{
-		ID:        body.ID,
-		ProductID: body.ProductID,
-		Name:      product.Name,
-		Price:     product.Price,
-		Category:  product.Category,
-		Quantity:  body.Quantity,
+		ID:         body.ID,
+		ProductID:  body.ProductID,
+		Name:       product.Name,
+		Price:      product.Price,
+		Category:   category.Name,
+		CategoryID: category.ID,
+		Quantity:   body.Quantity,
 	}
 	db.Db.Create(&cartMember)
 	return c.JSON(http.StatusOK, cartMember)
@@ -129,13 +148,13 @@ func CreateCartMember(c echo.Context) error {
 
 func DeleteCartMember(c echo.Context) error {
 	id := c.Param("id")
-	var cartMember model.CartMember
+
 	cartMember, err := get_cart_member(id)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return c.JSON(
 			http.StatusNotFound,
 			map[string]string{
-				"error": "Cart member with ID " + id + " not in cart",
+				"error": "Cart member with ID: " + id + " not in cart",
 			},
 		)
 	}

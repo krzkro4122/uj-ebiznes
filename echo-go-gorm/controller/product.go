@@ -25,9 +25,15 @@ func get_product(id string) (model.Product, error) {
 // PRODUCTS
 func ReadProduct(c echo.Context) error {
 	id := c.Param("id")
+
 	product, err := get_product(id)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return c.JSON(http.StatusNotFound, map[string]string{"error": "Product not found"})
+		return c.JSON(
+			http.StatusNotFound,
+			map[string]string{
+				"error": "Product with ID: " + id + " not found",
+			},
+		)
 	}
 	return c.JSON(http.StatusOK, product)
 }
@@ -53,7 +59,7 @@ func UpdateProduct(c echo.Context) error {
 		return c.JSON(
 			http.StatusNotFound,
 			map[string]string{
-				"error": "Product with ID: " + id + " not in stock",
+				"error": "Product with ID: " + id + " not found",
 			},
 		)
 	}
@@ -75,19 +81,39 @@ func UpdateProduct(c echo.Context) error {
 }
 
 func CreateProduct(c echo.Context) error {
-	// Create a new instance of your struct to hold the JSON data
 	var body model.Product
 
-	// Bind the JSON data from the request body to your struct
 	if err := c.Bind(&body); err != nil {
 		return err
 	}
+
+	_product, err := get_product(strconv.Itoa(body.ID))
+	if !errors.Is(err, gorm.ErrRecordNotFound) {
+		return c.JSON(
+			http.StatusNotFound,
+			map[string]string{
+				"error": "Product item with ID: " + strconv.Itoa(_product.ID) + " already exists",
+			},
+		)
+	}
+
+	category, _err := get_category(strconv.Itoa(body.CategoryID))
+	if errors.Is(_err, gorm.ErrRecordNotFound) {
+		return c.JSON(
+			http.StatusNotFound,
+			map[string]string{
+				"error": "Category with ID: " + strconv.Itoa(body.CategoryID) + " not found",
+			},
+		)
+	}
+
 	var product = model.Product{
-		ID:       body.ID,
-		Name:     body.Name,
-		Price:    body.Price,
-		Category: body.Category,
-		Quantity: body.Quantity,
+		ID:         body.ID,
+		Name:       body.Name,
+		Price:      body.Price,
+		Category:   category.Name,
+		CategoryID: category.ID,
+		Quantity:   body.Quantity,
 	}
 	db.Db.Create(&product)
 	return c.JSON(http.StatusOK, product)
@@ -95,10 +121,15 @@ func CreateProduct(c echo.Context) error {
 
 func DeleteProduct(c echo.Context) error {
 	id := c.Param("id")
-	var product model.Product
+
 	product, err := get_product(id)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return c.JSON(http.StatusNotFound, map[string]string{"error": "Product not found"})
+		return c.JSON(
+			http.StatusNotFound,
+			map[string]string{
+				"error": "Product not found",
+			},
+		)
 	}
 	db.Db.Delete(&product)
 	return c.JSON(http.StatusOK, product)

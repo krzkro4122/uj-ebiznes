@@ -14,6 +14,12 @@ func define_endpoints(e *echo.Echo) {
 	e.PUT("/product/:id", controller.UpdateProduct)
 	e.POST("/product", controller.CreateProduct)
 	e.DELETE("/product/:id", controller.DeleteProduct)
+	// Category
+	e.GET("/category/:id", controller.ReadCategory)
+	e.GET("/category", controller.ReadAllCategories)
+	e.PUT("/category/:id", controller.UpdateCategory)
+	e.POST("/category", controller.CreateCategory)
+	e.DELETE("/category/:id", controller.DeleteCategory)
 	// Cart
 	e.GET("/cart/:id", controller.ReadCartMember)
 	e.GET("/cart", controller.ReadAllCartMembers)
