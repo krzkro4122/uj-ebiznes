@@ -22,6 +22,18 @@ func get_category(id string) (model.Category, error) {
 	return category, nil
 }
 
+func filter(products []model.Product, cond func(product model.Product) bool) []model.Product {
+
+	result := []model.Product{}
+
+	for _, product := range products {
+		if cond(product) {
+			result = append(result, product)
+		}
+	}
+	return result
+}
+
 // Category
 func ReadCategory(c echo.Context) error {
 	id := c.Param("id")
@@ -35,7 +47,13 @@ func ReadCategory(c echo.Context) error {
 			},
 		)
 	}
-	return c.JSON(http.StatusOK, category)
+
+	all_products := get_all_products()
+	all_products = filter(all_products, func(product model.Product) bool {
+		return product.Category == category.Name
+	})
+
+	return c.JSON(http.StatusOK, all_products)
 }
 
 func ReadAllCategories(c echo.Context) error {
@@ -76,7 +94,7 @@ func CreateCategory(c echo.Context) error {
 	}
 
 	_, err := get_category(strconv.Itoa(body.ID))
-	if errors.Is(err, gorm.ErrRecordNotFound) {
+	if !errors.Is(err, gorm.ErrRecordNotFound) {
 		return c.JSON(
 			http.StatusNotFound,
 			map[string]string{
@@ -96,7 +114,7 @@ func CreateCategory(c echo.Context) error {
 func DeleteCategory(c echo.Context) error {
 	id := c.Param("id")
 
-	category, err := get_cart_member(id)
+	category, err := get_category(id)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return c.JSON(
 			http.StatusNotFound,

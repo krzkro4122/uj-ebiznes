@@ -22,6 +22,12 @@ func get_product(id string) (model.Product, error) {
 	return product, nil
 }
 
+func get_all_products() []model.Product {
+	var products []model.Product
+	db.Db.Find(&products)
+	return products
+}
+
 // PRODUCTS
 func ReadProduct(c echo.Context) error {
 	id := c.Param("id")
