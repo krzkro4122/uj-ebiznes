@@ -13,21 +13,11 @@ type Product struct {
 	Category   string
 	CategoryID int
 	Quantity   int
+	Stock      int
+	Thumbnail  string
 }
 
 type Category struct {
-	gorm.Model
 	ID   int
 	Name string
-}
-
-type CartMember struct {
-	gorm.Model
-	ID         int
-	ProductID  int
-	Name       string
-	Price      int
-	Category   string
-	CategoryID int
-	Quantity   int
 }

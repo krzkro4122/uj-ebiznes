@@ -5,6 +5,7 @@ import (
 
 	"github.com/krzkro4122/echogogorm/controller"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 func define_endpoints(e *echo.Echo) {
@@ -20,18 +21,16 @@ func define_endpoints(e *echo.Echo) {
 	e.PUT("/category/:id", controller.UpdateCategory)
 	e.POST("/category", controller.CreateCategory)
 	e.DELETE("/category/:id", controller.DeleteCategory)
-	// Cart
-	e.GET("/cart/:id", controller.ReadCartMember)
-	e.GET("/cart", controller.ReadAllCartMembers)
-	e.PUT("/cart/:id", controller.UpdateCartMember)
-	e.POST("/cart", controller.CreateCartMember)
-	e.DELETE("/cart/:id", controller.DeleteCartMember)
 	// Purchase
 	e.POST("/cart/buy", controller.BuyCart)
 }
 
 func Serve(port string) {
 	e := echo.New()
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+	}))
 	define_endpoints(e)
 	e.Logger.Fatal(e.Start(fmt.Sprintf(":%s", port)))
 }
