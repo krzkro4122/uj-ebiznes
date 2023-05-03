@@ -46,6 +46,7 @@ const Card = (props: CardProps) => {
                 quantity: 0,
                 name: props.good.Name,
                 group: props.good.Category,
+                categoryID: props.good.CategoryID,
                 stock: props.good.Stock,
                 thumbnail: props.good.Thumbnail,
               };

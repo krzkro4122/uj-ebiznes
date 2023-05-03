@@ -8,15 +8,13 @@ axios.defaults.baseURL = BASE_URL;
 axios.defaults.headers.post["Content-Type"] = "application/json;charset=utf-8";
 // axios.defaults.headers.post["Access-Control-Allow-Origin"] = 'http://localhost:9000';
 
-const items2goods = (items: Item[]): IGood[] => {
+const items2goods = (items: Item[]): any[] => {
   return items.map((item) => {
-    const good: IGood = {
+    const good = {
       ID: +item.id,
-      id: item.id,
-      name: item.name,
       Name: item.name,
       Category: item.category,
-      price: item.price,
+      CategoryID: item.categoryID,
       Price: item.price,
       Thumbnail: item.thumbnail,
       Quantity: item.quantity!,
@@ -36,16 +34,22 @@ export const fetchGoods = async (): Promise<IGood[]> => {
   }
 };
 
-export const buyGoods = async (items: Item[]): Promise<string> => {
-  try {
-    console.log(items);
-    let goods = items2goods(items);
-    const response = await axios.post(`${BASE_URL}/cart/buy`, goods);
-    return response.data;
-  } catch (error) {
-    console.error(error);
-    return `ERROR: ${error}`;
-  }
+export const buyGoods = async (
+  items: Item[],
+  money: number
+): Promise<[any, number]> => {
+  let goods = items2goods(items);
+  console.log(goods);
+  const response = await axios
+    .post(`${BASE_URL}/cart/buy`, {
+      products: goods,
+      payment: money,
+    })
+    .catch(function (error) {
+      console.error(error);
+      throw Error(error);
+    });
+  return [response.data, response.status];
 };
 
 export default {

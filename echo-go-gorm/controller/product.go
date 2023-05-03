@@ -70,19 +70,7 @@ func UpdateProduct(c echo.Context) error {
 		)
 	}
 
-	stockQuantity := product.Quantity
-	if body.Quantity > stockQuantity {
-		return c.JSON(
-			http.StatusNotFound,
-			map[string]string{
-				"error": "Not enough of product with ID: " + id +
-					" in stock. Requested: " + strconv.Itoa(body.Quantity) +
-					", available: " + strconv.Itoa(stockQuantity),
-			},
-		)
-	}
-
-	db.Db.Model(&product).Update("Quantity", body.Quantity)
+	db.Db.Model(&product).Update("Stock", body.Stock)
 	return c.JSON(http.StatusOK, product)
 }
 
@@ -91,16 +79,6 @@ func CreateProduct(c echo.Context) error {
 
 	if err := c.Bind(&body); err != nil {
 		return err
-	}
-
-	_product, err := get_product(strconv.Itoa(body.ID))
-	if !errors.Is(err, gorm.ErrRecordNotFound) {
-		return c.JSON(
-			http.StatusNotFound,
-			map[string]string{
-				"error": "Product item with ID: " + strconv.Itoa(_product.ID) + " already exists",
-			},
-		)
 	}
 
 	category, _err := get_category(strconv.Itoa(body.CategoryID))
@@ -119,6 +97,8 @@ func CreateProduct(c echo.Context) error {
 		Price:      body.Price,
 		Category:   category.Name,
 		CategoryID: category.ID,
+		Stock:      body.Stock,
+		Thumbnail:  body.Thumbnail,
 		Quantity:   body.Quantity,
 	}
 	db.Db.Create(&product)
