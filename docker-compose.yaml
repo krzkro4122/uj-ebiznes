@@ -1,0 +1,13 @@
+services:
+  front-end:
+    build:
+      context: docker-go-js
+      dockerfile: frontendDockerfile
+    ports:
+      - "5173:5173"
+  back-end:
+    build:
+      context: docker-go-js
+      dockerfile: backendDockerfile
+    ports:
+      - "9000:9000"
