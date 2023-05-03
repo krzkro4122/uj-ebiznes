@@ -1,6 +1,5 @@
-import { useEffect, useState, useContext } from "react";
+import { useContext } from "react";
 import ShopContext from "../contexts/ShopContext";
-// import useCart from "../hooks/useCart";
 import { IGood } from "../interface";
 import Card from "./Card";
 
@@ -11,7 +10,7 @@ export const ShopPane = (props: GoodsProps): JSX.Element => {
   // const { cart, addGood, removeGood } = useCart();
 
   return (
-    <div className="p-2" key={1}>
+    <div className="p-2 flex flex-wrap" key={1}>
       {goods?.map((good: IGood) => (
         <Card
           good={good}
