@@ -12,4 +12,4 @@ RUN apt-get install -y vim git curl golang sqlite3
 
 RUN go mod download
 
-CMD [ "go", "run". "./echo-go-gorm/server.go"]
+CMD [ "go", "run", "server.go"]

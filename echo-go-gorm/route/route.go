@@ -9,6 +9,8 @@ import (
 )
 
 func define_endpoints(e *echo.Echo) {
+	e.Static("/assets", "./public/assets")
+	e.GET("/", controller.Index)
 	// Product
 	e.GET("/product/:id", controller.ReadProduct)
 	e.GET("/product", controller.ReadAllProducts)
@@ -32,5 +34,5 @@ func Serve(port string) {
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
 	}))
 	define_endpoints(e)
-	e.Logger.Fatal(e.Start(fmt.Sprintf(":%s", port)))
+	e.Logger.Fatal(e.Start(fmt.Sprintf("127.0.0.1:%s", port)))
 }

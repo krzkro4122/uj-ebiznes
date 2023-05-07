@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM node
 
 ENV TZ=Europe/Warsaw
 
@@ -6,10 +6,5 @@ EXPOSE 5713
 
 COPY shop-front .
 
-RUN apt-get update -y
-RUN apt-get upgrade -y
-RUN apt-get install -y vim git curl nodejs npm
-
-RUN npm install
-
-CMD [ "npm", "run". "dev"]
+RUN npm i
+RUN npm run build
