@@ -18,6 +18,6 @@ func get_port(default_port string) string {
 
 func main() {
 	port := get_port("9000")
-	fmt.Printf("Running the server on: localhost:%s\n", port)
+	fmt.Printf("Running the server on: http://localhost:%s\n", port)
 	route.Serve(port)
 }
