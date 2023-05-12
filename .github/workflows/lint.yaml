@@ -21,8 +21,8 @@ jobs:
         with:
           go-version: 1.20.4
           cache: false
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v3
+      - name: Run linters
+        uses: wearerequired/lint-action@v2
         with:
-          version: v1.29
-          args: ./server.go
+          gofmt: true
+          golint: true
