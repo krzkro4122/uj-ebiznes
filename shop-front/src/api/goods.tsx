@@ -8,6 +8,13 @@ axios.defaults.baseURL = BASE_URL;
 axios.defaults.headers.post["Content-Type"] = "application/json;charset=utf-8";
 // axios.defaults.headers.post["Access-Control-Allow-Origin"] = 'http://localhost:9000';
 
+interface IPayment {
+  cvv: string;
+  expirationDate: string;
+  cardNumber: string;
+  amount: number;
+}
+
 const items2goods = (items: Item[]): any[] => {
   return items.map((item) => {
     const good = {
@@ -40,10 +47,19 @@ export const buyGoods = async (
 ): Promise<[any, number]> => {
   let goods = items2goods(items);
   console.log(goods);
+
+  const payment: IPayment = {
+    // Fake card info from https://www.creditcardvalidator.org/generator
+    cvv: "794",
+    expirationDate: "8/2024",
+    cardNumber: "4929139795602479",
+    amount: money,
+  };
+
   const response = await axios
     .post(`${BASE_URL}/cart/buy`, {
       products: goods,
-      payment: money,
+      payment: payment,
     })
     .catch(function (error) {
       console.error(error);

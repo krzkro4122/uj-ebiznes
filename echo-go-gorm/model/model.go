@@ -21,3 +21,15 @@ type Category struct {
 	ID   int
 	Name string
 }
+
+type IPayment struct {
+	Cvv            string `json:"cvv"`
+	ExpirationDate string `json:"expirationDate"`
+	CardNumber     string `json:"cardNumber"`
+	Amount         int    `json:"amount"`
+}
+
+type IPurchase struct {
+	Payment  IPayment  `json:"payment"`
+	Products []Product `json:"products"`
+}

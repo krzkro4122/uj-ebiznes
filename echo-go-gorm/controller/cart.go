@@ -10,19 +10,14 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type IPurchase struct {
-	Payment  int             `json:"payment"`
-	Products []model.Product `json:"products"`
-}
-
 func BuyCart(c echo.Context) error {
-	var body IPurchase
+	var body model.IPurchase
 
 	if err := c.Bind(&body); err != nil {
 		return err
 	}
 
-	payment := body.Payment
+	payment := body.Payment.Amount
 	products := body.Products
 
 	// Check quantities
