@@ -13,7 +13,7 @@ const Card = (props: CardProps) => {
   const { addItem, inCart, updateItemQuantity, getItem } = useCart();
 
   return (
-    <div className="shadow-md w-80 p-1 m-2 float-left border-solid border border-black rounded">
+    <div className="card shadow-md w-80 p-1 m-2 float-left border-solid border border-black rounded">
       <div className="flex justify-center">
         <img
           src={props.good.Thumbnail}
@@ -56,11 +56,9 @@ const Card = (props: CardProps) => {
           }}
         >
           <span className="border shadow-md rounded-md text-white bg-gray-400 p-1.5 border-solid border-gray-400 hover:bg-white hover:text-gray-500 active:bg-gray-200">
-          Buy
+            Buy
           </span>{" "}
-          <span className="text-gray-600">
-          for ${props.good.Price}
-          </span>
+          <span className="text-gray-600">for ${props.good.Price}</span>
         </button>
         <span className="text-gray-500">{props.good.Stock} pcs.</span>
       </div>
