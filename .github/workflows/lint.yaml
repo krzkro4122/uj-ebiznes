@@ -25,3 +25,6 @@ jobs:
         uses: golangci/golangci-lint-action@v3
         with:
           version: v1.29
+      - run: |
+          cd echo-go-gorm
+          golangci-lint run
