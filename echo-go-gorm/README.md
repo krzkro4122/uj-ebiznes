@@ -17,3 +17,12 @@ go run server.go
 ```
 
 TIP: You can also use it with the `frontend` from `../shop-front` by going to `http://localhost:9000`
+
+# E2E tests with cypress
+- To run cypress e2e tests:
+```
+npm run e2e
+```
+# E2E Test results:
+
+![image](https://github.com/krzkro4122/uj-ebiznes/assets/75375838/c0368305-e7ff-4eaf-a63e-7d0834a615ba)
