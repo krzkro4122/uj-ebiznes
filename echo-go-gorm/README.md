@@ -26,3 +26,6 @@ npm run e2e
 # E2E Test results:
 
 ![image](https://github.com/krzkro4122/uj-ebiznes/assets/75375838/c0368305-e7ff-4eaf-a63e-7d0834a615ba)
+
+# Github Actions
+This dir is also linted on every push/PR (hooks) with `gofmt` along with github actions.
