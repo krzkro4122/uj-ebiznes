@@ -98,7 +98,10 @@ function Cart() {
             </span>
             <button
               className="text-md m-0.5 pl-1 pr-1 rounded-md border shadow-md border-gray-400 hover:bg-gray-100 active:bg-gray-300 "
-              onClick={() => removeItem(item.id)}
+              onClick={() => {
+                item.quantity = 0;
+                removeItem(item.id);
+              }}
             >
               🗑
             </button>
