@@ -27,3 +27,5 @@ jobs:
         uses: golangci/golangci-lint-action@v3
         with:
           version: v1.29
+          # Optional: working directory, useful for monorepos
+          working-directory: echo-go-gorm
