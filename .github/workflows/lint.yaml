@@ -6,8 +6,11 @@ on:
     branches:
       - main
   pull_request:
+
 permissions:
-  contents: read
+  checks: write
+  contents: write
+
 jobs:
   golangci:
     runs-on: macos-latest
