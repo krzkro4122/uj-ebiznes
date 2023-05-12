@@ -23,5 +23,3 @@ jobs:
           cache: false
       - name: golangci-lint
         run: golangci-lint run
-        with:
-          version: v1.29
