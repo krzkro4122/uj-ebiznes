@@ -10,7 +10,7 @@ permissions:
   contents: read
 jobs:
   golangci:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     name: lint
     defaults:
       run:
@@ -26,4 +26,3 @@ jobs:
         with:
           version: v1.29
           args: ./server.go
-          working-directory: ./echo-go-gorm
