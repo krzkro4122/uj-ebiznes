@@ -18,7 +18,7 @@ describe('Visits the home page', () => {
     cy.contains("There's no welcome page in order to optimize user retention");
   });
 
-  it('Load the header\'s elements', () => {
+  it('Load the header\'s elements in home page', () => {
     headerElements.forEach((label) => {
       cy.contains(label);
     });
@@ -37,7 +37,7 @@ describe('Visits the browse page and clicks Buy', () => {
     cy.url().should('include', '/browse');
   });
 
-  it('Load the header\'s elements', () => {
+  it('Load the header\'s elements in browse page', () => {
     headerElements.forEach((label) => {
       cy.contains(label);
     });
@@ -47,20 +47,57 @@ describe('Visits the browse page and clicks Buy', () => {
     productNames.forEach((product) => cy.contains(product));
   });
 
-  it('Clicks buy 24 times (enough in stock)', () => {
-    for (let i = 0; i < 23; i++) {
+  it('Clicks buy 10 times (enough in stock)', () => {
+    for (let i = 0; i < 10; i++) {
       cy.get('.card:nth-child(3) .buy').click();
     };
     cy.get('.card:nth-child(3) .buy')
       .should('not.have.class', 'cursor-not-allowed');
   });
 
-  it('Clicks buy 25 times (not enough in stock)', () => {
-    for (let i = 0; i < 24; i++) {
+  it('Clicks buy 22 times (not enough in stock)', () => {
+    for (let i = 0; i < 22; i++) {
       cy.get('.card:nth-child(3) .buy').click();
     };
     cy.get('.card:nth-child(3) .buy')
       .should('have.class', 'cursor-not-allowed');
+  });
+
+});
+
+describe('Visits the browse page and clicks Buy and check cart', () => {
+
+  beforeEach(() => {
+    cy.visit(URL)
+    cy.contains('Browse').click()
+    cy.url().should('include', '/browse');
+  });
+
+  it('Clicks buy 2 times (enough in stock) and checks cart', () => {
+    cy.get('.card:nth-child(3) .buy').click();
+    cy.get('.card:nth-child(3) .buy').click();
+    cy.contains('Shopping Cart').click();
+    cy.contains('Total item count: 2');
+  });
+
+  it('Clicks buy 10 times (enough in stock) and checks cart', () => {
+    for (let i = 0; i < 10; i++) {
+      cy.get('.card:nth-child(3) .buy').click();
+    }
+    cy.contains('Shopping Cart').click();
+    cy.contains('Total item count: 10');
+  });
+
+  it('Clicks buy 22 times (not enough in stock) and checks cart', () => {
+    for (let i = 0; i < 22; i++) {
+      cy.get('.card:nth-child(3) .buy').click();
+    }
+    cy.contains('Shopping Cart').click();
+    cy.contains('Total item count: 22');
+    cy.contains('Browse').click();
+    cy.get('.card:nth-child(3) .buy').click();
+    cy.contains('Shopping Cart').click();
+    cy.contains('Total item count: 22');
   });
 
 });
@@ -76,7 +113,7 @@ describe('Visits the (empty) cart page', () => {
     cy.url().should('include', '/cart');
   });
 
-  it('Load the header\'s elements', () => {
+  it('Load the header\'s elements in the cart page', () => {
     headerElements.forEach((label) => {
       cy.contains(label);
     });
@@ -114,8 +151,8 @@ describe('Operates the shopping cart', () => {
   beforeEach(() => {
     cy.visit(URL);
     cy.contains('Browse').click();
-    cy.get('.card:nth-child(3) .buy').click()
-    cy.get('.card:nth-child(3) .buy').click()
+    cy.get('.card:nth-child(5) .buy').click()
+    cy.get('.card:nth-child(5) .buy').click()
     cy.contains('Shopping Cart').click();
   });
 
@@ -124,18 +161,25 @@ describe('Operates the shopping cart', () => {
     cy.contains('empty');
   });
 
-  it('Increase item\'s quantity in stock range', () => {
+  it('Increase item\'s quantity one time', () => {
     cy.contains('+').click();
     cy.contains('Total item count: 3');
   });
 
-  it('Increase item\'s quantity outside of stock range', () => {
-    for (let i = 0; i < 22; i++) {
+  it('Increase item\'s quantity in stock range', () => {
+    for (let i = 0; i < 10; i++) {
       cy.contains('+').click();
     }
-    cy.contains('Total item count: 24');
+    cy.contains('Total item count: 12');
+  });
+
+  it('Increase item\'s quantity outside of stock range', () => {
+    for (let i = 0; i < 72; i++) {
+      cy.contains('+').click();
+    }
+    cy.contains('Total item count: 74');
     cy.contains('+').click();
-    cy.contains('Total item count: 24');
+    cy.contains('Total item count: 74');
   });
 
   it('Decrease item\'s quantity', () => {
