@@ -1,7 +1,19 @@
+import asyncio
 import openai
+import time
 import os
 
 from dotenv import load_dotenv
+
+
+async def example_counter():
+    now = time.time()
+    print("Started counter")
+    for i in range(0, 10):
+        last = now
+        await asyncio.sleep(0.5)
+        now = time.time()
+        print(f"{i}: Was asleep for {now - last}s")
 
 
 def init_openai():
@@ -11,7 +23,7 @@ def init_openai():
 
 
 def ask_openai(prompt: str, model="text-davinci-003") -> str:
-
+    print(prompt)
     # Generate a response
     completion = openai.Completion.create(
         engine=model,
@@ -24,11 +36,24 @@ def ask_openai(prompt: str, model="text-davinci-003") -> str:
     return completion.choices[0].text
 
 
-def example_usage():
+async def ask_openai_async(prompt, model="text-davinci-003"):
+    loop = asyncio.get_event_loop()
+    return await loop.run_in_executor(None, ask_openai, prompt, model)
+
+
+async def example_usage():
+    # async python is complicated as hell ☠️☠️☠️
+    loop = asyncio.get_event_loop()
+    counter_output = loop.create_task(example_counter())
+
     init_openai()
-    print(prompt := "What's the square root of 3 equal to?")
-    print(ask_openai(prompt))
+    prompt = "What's the square root of 3 equal to?"
+    results = asyncio.gather(ask_openai_async(prompt))
+    response = await results
+    print(response[0])
+
+    await counter_output
 
 
 if __name__ == "__main__":
-    example_usage()
+    asyncio.get_event_loop().run_until_complete(example_usage())
