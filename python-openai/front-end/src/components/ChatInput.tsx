@@ -2,22 +2,32 @@ import { FormEvent, useContext, useState } from "react";
 
 import "../styles/ChatInput.css";
 
-async function handleSubmit(e: FormEvent<HTMLFormElement>) {
-  e.preventDefault();
-}
-
 function ChatInput() {
+  const [currentPrompt, setCurrentPrompt] = useState<String>();
+
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (currentPrompt) {
+      // DO STH!!!
+      alert(currentPrompt);
+    }
+  }
+
   return (
     <div className="chatInput">
       <form className="chatForm" onSubmit={handleSubmit}>
         <label>
-          <input type="text" placeholder="Username" autoFocus />
+          <input
+            className="prompt"
+            type="text"
+            onChange={(event) => setCurrentPrompt(event.target.value)}
+            placeholder="Prompt me!"
+            autoFocus
+          />
         </label>
-        <div className="ask">
-          <button type="submit">
-            Ask
-          </button>
-        </div>
+        <button className="ask" type="submit">
+          Ask
+        </button>
       </form>
     </div>
   );

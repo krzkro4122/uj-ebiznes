@@ -73,6 +73,6 @@
     outline: solid 3.5px red;
 }
 
-input:focus {
+.input:focus {
     outline: solid 2px var(--accent-color);
 }
