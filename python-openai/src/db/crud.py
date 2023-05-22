@@ -14,7 +14,7 @@ class TokenInfo:
 
 
 def get_user_token(db: Session, user_id: int) -> Optional[models.Token]:
-    return db.query(models.Token).filter(models.Token.owner_id == user_id).order_by(models.Token.created_at).first()
+    return db.query(models.Token).filter(models.Token.owner_id == user_id).order_by(models.Token.valid_until.desc()).first()
 
 
 def get_user(db: Session, user_id: int) -> Optional[models.User]:

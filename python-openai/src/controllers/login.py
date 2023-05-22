@@ -22,6 +22,10 @@ def handleLogin(credentials: schemas.Credentials, db: Session) -> response:
 
 
 def login(user: models.User, credentials: schemas.Credentials, db: Session) -> response:
+    current_token = crud.get_user_token(db, user.id)
+    if current_token:
+        return skip_authentication(user.id, current_token)
+
     generated_token = authenticate(user, credentials)
     if not generated_token:
         raise HTTPException(status_code=401, detail="Bad credentials")
@@ -43,3 +47,8 @@ def accept_user(user_id: models.User.id, generated_token: models.Token.token, db
     )
     db_token = crud.create_token(db, new_token, user_id)
     return db_token
+
+
+def skip_authentication(user_id: models.User.id, current_token: models.Token) -> response:
+    print(f'\tUser with ID: {user_id} already has a valid token: {current_token}')
+    return current_token
