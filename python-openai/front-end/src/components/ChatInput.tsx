@@ -2,14 +2,17 @@ import { FormEvent, useContext, useState } from "react";
 
 import "../styles/ChatInput.css";
 
-function ChatInput() {
+interface IPrompt {
+  setPrompt: React.Dispatch<React.SetStateAction<String | undefined>>;
+}
+
+function ChatInput({ setPrompt }: IPrompt) {
   const [currentPrompt, setCurrentPrompt] = useState<String>();
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (currentPrompt) {
-      // DO STH!!!
-      alert(currentPrompt);
+      setPrompt(currentPrompt);
     }
   }
 
