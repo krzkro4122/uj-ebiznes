@@ -1,0 +1,13 @@
+.chatInput {
+    font-size: 2rem;
+}
+
+.chatForm {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.ask {
+    margin: 0;
+}

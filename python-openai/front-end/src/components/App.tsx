@@ -1,21 +1,18 @@
 import { useState } from "react";
 
-import TaskDashboard from "./TaskDashboard";
+import Chat from "./Chat";
 import Login from "./Login";
+import { Token, getToken } from "../helpers/validation";
 import "../styles/App.css";
 
-function App() {
-  const [token, setToken] = useState<String | undefined>();
 
-  const getToken = () => {
-    const token = "lol i am a token";
-    return token;
-  };
+function App() {
+  const [token, setToken] = useState<Token>();
 
   return (
     <div className="App">
       {token ? (
-        <TaskDashboard />
+        <Chat />
       ) : (
         <Login getToken={getToken} setToken={setToken} />
       )}

@@ -10,8 +10,8 @@ import {
 import "../styles/Login.css";
 
 interface ITokenHandlers {
-  getToken: (username: Username, password: Password) => Token;
-  setToken: React.Dispatch<React.SetStateAction<Token>>;
+  getToken: (username: Username, password: Password) => Promise<Token>;
+  setToken: React.Dispatch<React.SetStateAction<Token | undefined>>;
 }
 
 function Login({ setToken, getToken }: ITokenHandlers) {
@@ -24,7 +24,7 @@ function Login({ setToken, getToken }: ITokenHandlers) {
   useEffect(() => {
     setUsernameIsLegal(validateUsername(username));
     setPasswordIsLegal(validatePassword(password));
-  }, [username, password]);
+  }, [username, password, usernameIsLegal]);
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -34,21 +34,24 @@ function Login({ setToken, getToken }: ITokenHandlers) {
       return;
     }
 
-    const token = getToken(username, password);
-    setToken(token);
+    const token: Token = await getToken(username, password);
+    if (token !== undefined) setToken(token);
+    else alert("Bad credentials!");
   }
 
   return (
     <div className="loginPage">
       <div className="loginForm">
         <h1>Welcome! 👋🏻</h1>
-        <form onSubmit={handleSubmit}>
+        <form className="form" onSubmit={handleSubmit}>
           <label>
             <input
               type="text"
               placeholder="Username"
               onChange={(event) => setUsername(event.target.value)}
-              className={!usernameIsLegal && isSubmitted ? "invalid" : ""}
+              className={
+                (!usernameIsLegal && isSubmitted ? "invalid" : "") + " input"
+              }
               autoFocus
             />
           </label>
@@ -57,14 +60,16 @@ function Login({ setToken, getToken }: ITokenHandlers) {
               type="password"
               placeholder="Password"
               onChange={(event) => setPassword(event.target.value)}
-              className={!passwordIsLegal && isSubmitted ? "invalid" : ""}
+              className={
+                (!passwordIsLegal && isSubmitted ? "invalid" : "") + " input"
+              }
             />
           </label>
           <div className="buttons">
-            <button id="login" type="submit">
+            <button id="login" className="button" type="submit">
               Log in
             </button>
-            <button id="register" type="submit">
+            <button id="register" className="button" type="submit">
               Register
             </button>
           </div>
