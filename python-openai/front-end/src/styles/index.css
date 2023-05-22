@@ -1,0 +1,47 @@
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  background-color: #242424;
+  width: 100%;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+
+  --accent-color: gold;
+  --accent-color-low-sat: rgba(255, 215, 0, 0.3);
+  --bg-dark: #242424;
+  --bg-darker: #141414;
+  --bg-dark-high-sat: rgba(0, 0, 0, 0.6);
+  --bg-darker-low-sat: rgba(255, 255, 255, 0.4);
+  --bg-semi: rgba(255, 255, 255, 0.2);
+  --light: rgba(255, 255, 255, 0.87);
+
+  --card-width: clamp(1rem, 10vw, 3rem);
+  --radius: 0.5rem;
+
+  color: var(--light);
+}
+
+* {
+  margin: 0px;
+  padding: 0px;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  /* Super Fancy! */
+  /* overflow: hidden; */
+
+}
+
+#root {
+  height: 100%;
+}

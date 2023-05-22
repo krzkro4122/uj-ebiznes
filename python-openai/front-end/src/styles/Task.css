@@ -1,0 +1,10 @@
+.task {
+    display: grid;
+    place-items: center;
+    flex-grow: 1;
+}
+
+.task>h1 {
+    color: white;
+    font-size: 10rem;
+}

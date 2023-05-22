@@ -1,0 +1,22 @@
+.sideBar {
+  background-color: var(--bg-darker);
+  overflow-y: scroll;
+  top: 0;
+  bottom: 0;
+}
+
+.sideBar::-webkit-scrollbar {
+  width: 0.5rem;
+}
+
+.sideBar::-webkit-scrollbar-track {
+  background: var(--bg-darker);
+
+}
+
+.sideBar::-webkit-scrollbar-thumb {
+  width: 1rem;
+  background: black;
+  background: var(--accent-color);
+
+}
