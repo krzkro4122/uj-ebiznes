@@ -3,7 +3,7 @@ import { FormEvent, useContext, useState } from "react";
 import "../styles/ChatInput.css";
 
 interface IPrompt {
-  setPrompt: React.Dispatch<React.SetStateAction<String | undefined>>;
+  setPrompt: React.Dispatch<React.SetStateAction<String>>;
 }
 
 function ChatInput({ setPrompt }: IPrompt) {

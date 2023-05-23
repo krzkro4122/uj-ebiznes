@@ -37,3 +37,10 @@ class User(UserBase):
 class Credentials(BaseModel):
     username: str
     password: str
+
+
+class Prompt(BaseModel):
+    prompt: str
+
+class Answer(BaseModel):
+    answer: str

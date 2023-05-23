@@ -1,11 +1,5 @@
-import { createContext } from "react";
+import { createContext, useState } from "react";
 
-const answers = [
-  "Some random",
-  "Random things",
-  "Things on the",
-  "The sidebar",
-  "LOL!",
-];
+const answers: Array<String | undefined> = [];
 const ChatContext = createContext(answers);
 export default ChatContext;

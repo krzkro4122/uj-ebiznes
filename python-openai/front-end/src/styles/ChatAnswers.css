@@ -6,3 +6,7 @@
     font-size: x-large;
     min-height: 30rem;
 }
+
+.answer:not(:first-child) {
+    border-top: 1px solid rgba(255, 255, 255, 0.25);
+}

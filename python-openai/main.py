@@ -44,3 +44,7 @@ async def root():
 @app.post("/login", response_model=schemas.Token)
 async def login(credentials: schemas.Credentials, db: Session = Depends(get_db)):
     return handleLogin(credentials, db)
+
+@app.post("/ask", response_model=schemas.Answer)
+async def root(Prompt: schemas.Prompt):
+    return {"answer": f"{Prompt.prompt}"}

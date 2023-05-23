@@ -3,13 +3,13 @@ import { FormEvent, useState } from "react";
 import "../styles/ChatAnswers.css";
 
 interface IAnswer {
-  answers: (String | undefined)[];
+  answers: String[];
 }
 
 function ChatAnswers({ answers }: IAnswer) {
-  const answersRedacted = answers.map((answer) => {
+  const answersRedacted = answers.map((answer, index) => {
     return (
-      <div>
+      <div key={index} className="answer">
         <b>{answer}</b>
       </div>
     );
