@@ -41,18 +41,19 @@ async def ask_openai_async(prompt, model="text-davinci-003"):
     return await loop.run_in_executor(None, ask_openai, prompt, model)
 
 
-async def example_usage():
-    # async python is complicated as hell ☠️☠️☠️
-    loop = asyncio.get_event_loop()
-    counter_output = loop.create_task(example_counter())
+async def use_chatter(prompt: str):
+    init_openai()
+    results = asyncio.gather(ask_openai_async(prompt))
+    response = await results
+    return response[0]
 
+
+async def example_usage():
     init_openai()
     prompt = "What's the square root of 3 equal to?"
     results = asyncio.gather(ask_openai_async(prompt))
     response = await results
     print(response[0])
-
-    await counter_output
 
 
 if __name__ == "__main__":

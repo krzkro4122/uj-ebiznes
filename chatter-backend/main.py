@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
 from src.controllers.login import handleLogin
+from src.controllers.prompt import handlePrompt
 from src.db.database import SessionLocal, engine
 import src.db.schemas as schemas
 import src.db.models as models
@@ -13,8 +14,10 @@ app = FastAPI()
 
 origins = [
     "http://localhost:5173",
+    "http://localhost:5000",
     "http://localhost",
     "localhost:5173"
+    "localhost:5000"
     "localhost"
 ]
 
@@ -46,5 +49,5 @@ async def login(credentials: schemas.Credentials, db: Session = Depends(get_db))
     return handleLogin(credentials, db)
 
 @app.post("/ask", response_model=schemas.Answer)
-async def root(Prompt: schemas.Prompt):
-    return {"answer": f"{Prompt.prompt}"}
+async def root(prompt: schemas.Prompt):
+    return await handlePrompt(prompt.prompt)
