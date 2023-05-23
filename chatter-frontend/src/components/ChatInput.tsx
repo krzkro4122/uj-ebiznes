@@ -4,9 +4,10 @@ import "../styles/ChatInput.css";
 
 interface IPrompt {
   setPrompt: React.Dispatch<React.SetStateAction<String>>;
+  isLoading: Boolean;
 }
 
-function ChatInput({ setPrompt }: IPrompt) {
+function ChatInput({ setPrompt, isLoading }: IPrompt) {
   const [currentPrompt, setCurrentPrompt] = useState<String>();
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
@@ -28,7 +29,7 @@ function ChatInput({ setPrompt }: IPrompt) {
             autoFocus
           />
         </label>
-        <button className="ask" type="submit">
+        <button className={`ask ${isLoading ? "loading" : ""}`} type="submit">
           Ask
         </button>
       </form>
