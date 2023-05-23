@@ -8,11 +8,14 @@ import "../styles/Chat.css";
 
 function Chat() {
   const [prompt, setPrompt] = useState<String>("");
-  let [answers, setAnswers] = useState<String[]>([]);
+  let [entries, setEntries] = useState<{
+    answer: String,
+    prompt: String
+  }[]>([]);
 
   const handle = async () => {
     const answer = await askOpenAi(prompt);
-    if (answer) setAnswers([...answers, answer]);
+    if (answer) setEntries([...entries, {answer: answer, prompt: prompt}]);
   };
 
   useEffect(() => {
@@ -21,8 +24,8 @@ function Chat() {
 
   return (
     <div className="chat">
-      <ChatContext.Provider value={answers}>
-        <ChatAnswers answers={answers} />
+      <ChatContext.Provider value={entries}>
+        <ChatAnswers entries={entries} />
         <ChatInput setPrompt={setPrompt} />
       </ChatContext.Provider>
     </div>

@@ -1,16 +1,21 @@
 import { FormEvent, useState } from "react";
-
 import "../styles/ChatAnswers.css";
 
-interface IAnswer {
-  answers: String[];
+interface IAnswerInfo {
+  entries: {
+    answer: String;
+    prompt: String;
+  }[];
 }
 
-function ChatAnswers({ answers }: IAnswer) {
-  const answersRedacted = answers.map((answer, index) => {
+function ChatAnswers({ entries }: IAnswerInfo) {
+  const answersRedacted = entries.map((entry, index) => {
     return (
       <div key={index} className="answer">
-        <b>{answer}</b>
+        <b>{entry.prompt}</b>
+        <br />
+        <br />
+        {entry.answer}
       </div>
     );
   });

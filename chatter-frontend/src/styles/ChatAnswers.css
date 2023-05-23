@@ -8,8 +8,10 @@
     max-height: 60rem;
 
     overflow-y: scroll;
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
@@ -18,5 +20,5 @@
 }
 
 .answer:not(:first-child) {
-    border-top: 1px solid rgba(255, 255, 255, 0.25);
+    border-top: 1px solid rgba(255, 255, 255, 0.4);
 }
