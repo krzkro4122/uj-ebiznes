@@ -19,6 +19,11 @@
     display: none;
 }
 
+.answer:not(:last-child) {
+    padding-bottom: 2rem;
+}
+
 .answer:not(:first-child) {
+    padding-top: 1rem;
     border-top: 1px solid rgba(255, 255, 255, 0.4);
 }

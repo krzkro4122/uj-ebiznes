@@ -16,6 +16,7 @@ function ChatAnswers({ entries }: IAnswerInfo) {
         <br />
         <br />
         {entry.answer}
+        <br />
       </div>
     );
   });
