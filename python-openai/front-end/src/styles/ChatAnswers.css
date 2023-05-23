@@ -5,6 +5,16 @@
     width: 40rem;
     font-size: x-large;
     min-height: 30rem;
+    max-height: 60rem;
+
+    overflow-y: scroll;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.chatAnswers::-webkit-scrollbar {
+    display: none;
 }
 
 .answer:not(:first-child) {
