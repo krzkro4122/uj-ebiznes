@@ -10,7 +10,7 @@ function App() {
 
   return (
     <div className="App">
-      {true ? <Chat /> : <Login getToken={getToken} setToken={setToken} />}
+      {token ? <Chat /> : <Login getToken={getToken} setToken={setToken} />}
     </div>
   );
 }
