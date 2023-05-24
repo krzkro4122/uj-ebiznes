@@ -1,0 +1,11 @@
+FROM node:latest
+
+COPY ./chatter-frontend /chatter-frontend
+
+WORKDIR /chatter-frontend
+
+EXPOSE 5173
+
+RUN npm i
+
+CMD [ "npm", "run", "dev" ]
