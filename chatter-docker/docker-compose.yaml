@@ -1,0 +1,63 @@
+networks:
+  ebiznes:
+    name: ebiznes
+
+services:
+
+  front:
+    build:
+      context: ..
+      dockerfile: chatter-docker/frontendDockerfile
+    networks:
+      ebiznes:
+        aliases:
+          - "front"
+    ports:
+      - "5173:5173"
+
+  db:
+    build:
+      context: ..
+      dockerfile: chatter-docker/databaseDockerfile
+    networks:
+      ebiznes:
+        aliases:
+          - "db"
+    ports:
+      - "5432:5432"
+    env_file:
+      - env-files/database.env
+
+  back:
+    build:
+      context: ..
+      dockerfile: chatter-docker/backendDockerfile
+    networks:
+      ebiznes:
+        aliases:
+          - "back"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    env_file:
+      - env-files/backend.env
+
+  chatter:
+    build:
+      context: ..
+      dockerfile: chatter-docker/serviceDockerfile
+    networks:
+      ebiznes:
+        aliases:
+          - "chatter"
+    ports:
+      - "5000:5000"
+    env_file:
+      - env-files/service.env
+
+# Equivalent docker run commands
+# FRONT   docker run -it --network ebiznes --network-alias front --name front -p 5173:5173 front
+# BACK    docker run -it --network ebiznes --network-alias back --name back -p 8080:8080 back
+# DB      docker run -it --network ebiznes --network-alias db --name db -p 5432:5432 -e POSTGRES_USER=ebiznesUser -e POSTGRES_PASSWORD=ebiznes -e POSTGRES_DB=ebiznes postgres
+# SERVICE docker run -it --network ebiznes --network-alias chatter --name chatter -p 5000:5000 chatter

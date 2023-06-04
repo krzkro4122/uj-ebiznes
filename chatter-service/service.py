@@ -20,4 +20,4 @@ async def ask():
     else:
         return 'Content-Type not supported!'
 
-app.run()
+app.run(host="0.0.0.0")

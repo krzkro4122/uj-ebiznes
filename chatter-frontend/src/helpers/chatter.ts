@@ -1,4 +1,4 @@
-const SERVER_URL = "http://localhost:8000";
+const SERVER_URL = "http://back:8080";
 
 interface AnswerJson {
     answer: string

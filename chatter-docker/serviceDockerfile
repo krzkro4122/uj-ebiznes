@@ -4,8 +4,6 @@ COPY ./chatter-service /chatter-service
 
 WORKDIR /chatter-service
 
-EXPOSE 5000
-
 RUN pip install -r ./requirements.txt
 
 CMD [ "python3", "service.py" ]

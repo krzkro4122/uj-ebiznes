@@ -1,4 +1,5 @@
 import os
+import time
 
 import psycopg2
 from dotenv import load_dotenv
@@ -17,7 +18,7 @@ conn = psycopg2.connect(
 
 cursor = conn.cursor()
 
-def add_user(id: int, username: str, password: str):
+def add_user(username: str, password: str):
     hash, salt = hash_password(password)
     query = f"INSERT INTO Users (username, password_hash, salt) VALUES ('{username}', '{hash}', '{salt}') RETURNING *"
     cursor.execute(query)
