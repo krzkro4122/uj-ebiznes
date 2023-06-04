@@ -1,4 +1,4 @@
-const SERVER_URL = "http://back:8080";
+import { SERVER_URL } from "./validation";
 
 interface AnswerJson {
     answer: string

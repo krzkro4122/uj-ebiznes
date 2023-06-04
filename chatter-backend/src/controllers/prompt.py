@@ -5,7 +5,7 @@ import json
 response = dict[str, str]
 prompt = str
 
-SERVICE_URL = "http://localhost:5000"
+SERVICE_URL = "http://chatter:5000"
 
 
 async def handlePrompt(prompt: prompt) -> response:

@@ -1,6 +1,7 @@
 .idea
 target
 .env
+service.env
 .vscode
 node_modules
 .dev

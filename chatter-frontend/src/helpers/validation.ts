@@ -3,7 +3,7 @@ export type Password = String | undefined;
 export type Email = String | undefined;
 export type Token = String | undefined;
 
-const SERVER_URL = "http://back:8080";
+export const SERVER_URL = "http://localhost:8080";
 
 export interface TokenInfo {
     created_at: string,
