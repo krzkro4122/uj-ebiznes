@@ -3,18 +3,6 @@ networks:
     name: ebiznes
 
 services:
-
-  front:
-    build:
-      context: ..
-      dockerfile: chatter-docker/frontendDockerfile
-    networks:
-      ebiznes:
-        aliases:
-          - "front"
-    ports:
-      - "5173:5173"
-
   db:
     build:
       context: ..
@@ -42,6 +30,19 @@ services:
       - db
     env_file:
       - env-files/backend.env
+
+  front:
+    build:
+      context: ..
+      dockerfile: chatter-docker/frontendDockerfile
+    networks:
+      ebiznes:
+        aliases:
+          - "front"
+    depends_on:
+      - back
+    ports:
+      - "5173:5173"
 
   chatter:
     build:

@@ -1,5 +1,4 @@
 import os
-import time
 
 import psycopg2
 from dotenv import load_dotenv
@@ -10,7 +9,7 @@ load_dotenv()
 
 conn = psycopg2.connect(
     database="ebiznes",
-    host='127.0.0.1',
+    host='localhost',
     user=os.getenv('DB_USER'),
     password=os.getenv('DB_PASSWORD'),
     port=os.getenv('DB_PORT')
